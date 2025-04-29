@@ -22,7 +22,7 @@
         line_width = 0;
     }
 %}
-escape_sequence \033\[[0-9;]m
+escape_sequence \033\[[0-9;]+m
 %option noyywrap nodefault
 %option yylineno
 %%
