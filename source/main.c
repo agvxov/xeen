@@ -17,11 +17,10 @@ sds stdin2str(void) {
     sds r = sdsnew("");
 
     char buffer[READ_BATCH_SIZE + 1];
-    buffer[READ_BATCH_SIZE] = '\0';
     int read_count = 0;
     do {
         read_count = fread(buffer, 1, READ_BATCH_SIZE, stdin);
-        r = sdscat(r, buffer);
+        r = sdscatlen(r, buffer, read_count);
     } while (read_count == READ_BATCH_SIZE);
 
     return r;
