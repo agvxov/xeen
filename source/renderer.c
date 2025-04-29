@@ -2,8 +2,7 @@
 
 #include <stdlib.h>
 
-// Made these global variables in order to reduce argument passing.
-static unsigned render_colour = 0xff000000;
+       colour_t render_colour = 0xff000000;
 static unsigned render_empty  = 0xff000000;
 
 // Passed the limit...
@@ -96,6 +95,8 @@ void render_string(const char * string, unsigned x, unsigned y) {
     // Do that only after this function finishes, otherwise there'll be offset.
 }
 
-void set_colour(unsigned red, unsigned green, unsigned blue) {
-    render_colour = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
+colour_t rbg2colour_t(colour_t red, colour_t green, colour_t blue) {
+    colour_t r;
+    r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
+    return r;
 }

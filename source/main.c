@@ -34,7 +34,7 @@ signed main(const int argc, const char * const argv[]) {
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
 
-    set_colour(255, 127, 63);
+    render_colour = rbg2colour_t(255, 127, 63);
 
     render_create(input, w, h);
 

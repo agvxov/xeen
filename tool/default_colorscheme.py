@@ -42,4 +42,4 @@ def rgb2escape(rgb : (int, int, int)) -> str:
 #	if ((i+1) % 8) == 0: print('')
 
 for i in range(256):
-	print("[{}] = 0xff{}{}{}".format(i, *[hex(i)[2:] for h in default_color_scheme(i)]))
+	print("[{}] = 0xff{}{}{},".format(i, *[hex(i)[2:] for h in default_color_scheme(i)]))

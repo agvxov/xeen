@@ -5,7 +5,7 @@
 SOURCE.d := source/
 OBJECT.d := object/
 
-SOURCE := main.c opts.c sds.c renderer.c exporter.c
+SOURCE := main.c opts.c sds.c renderer.c exporter.c colorscheme.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
