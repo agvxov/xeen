@@ -6,7 +6,7 @@ SOURCE.d := source/
 OBJECT.d := object/
 LIB.d	 := library/
 
-SOURCE := main.c opts.c sds.c
+SOURCE := main.c opts.c sds.c renderer.c exporter.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 

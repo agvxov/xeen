@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include <stdlib.h>
+
 #define font_width  ( 8)
 #define font_height ( 8)
 #define font_count  (96)
