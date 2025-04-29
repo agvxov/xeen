@@ -12,9 +12,9 @@ extern unsigned   render_height;
 extern unsigned   render_indent;
 extern colour_t   render_colour;
 
-colour_t rbg2colour_t(colour_t red, colour_t green, colour_t blue);
+colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
 
-extern void render_create(const char * file, unsigned width, unsigned height);
+extern void render_create(unsigned width, unsigned height);
 extern void render_delete(void);
 
 extern void render_character(char code, unsigned x, unsigned y);

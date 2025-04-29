@@ -47,7 +47,7 @@ unsigned   render_width  = 0;
 unsigned   render_height = 0;
 unsigned   render_indent = 4;
 
-void render_create(const char * file, unsigned width, unsigned height) {
+void render_create(unsigned width, unsigned height) {
     width  *= font_width;
     height *= font_height;
 
@@ -95,7 +95,7 @@ void render_string(const char * string, unsigned x, unsigned y) {
     // Do that only after this function finishes, otherwise there'll be offset.
 }
 
-colour_t rbg2colour_t(colour_t red, colour_t green, colour_t blue) {
+colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
     colour_t r;
     r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
     return r;
