@@ -3,6 +3,7 @@
 #include "opts.h"
 #include "renderer.h"
 #include "exporter.h"
+#include "colorscheme.h"
 
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
@@ -34,9 +35,9 @@ signed main(const int argc, const char * const argv[]) {
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
 
-    render_colour = rbg2colour_t(255, 127, 63);
+    render_colour = default_color;
 
-    render_create(input, w, h);
+    render_create(w, h);
 
     printf("Rendering image %i x %i...\n", render_width, render_height);
 
