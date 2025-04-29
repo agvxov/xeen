@@ -20,7 +20,7 @@ vpath %.yy.c ${OBJECT.d}
 vpath %.o ${OBJECT.d}
 vpath %.yy.o ${OBJECT.d}
 
-OUT := example
+OUT := example.out
 
 # --- Tools/Flags
 ifeq (${DEBUG}, 1)
