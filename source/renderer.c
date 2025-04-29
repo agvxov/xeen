@@ -6,15 +6,13 @@
 #define font_height ( 8)
 #define font_count  (96)
 
-// We can make this a global variable, or whatever...
-// Colours are defined as ABGR, because of endianess, I can change it.
-#define render_background (0xff000000)
-
 // Made these global variables in order to reduce argument passing.
 static unsigned * render_data   = NULL;
 static unsigned   render_width  = 0;
 static unsigned   render_height = 0;
 static unsigned   render_indent = 4;
+static unsigned   render_colour = 0xff000000;
+static unsigned   render_empty  = 0xff000000;
 
 // Passed the limit...
 static
@@ -86,14 +84,14 @@ unsigned get_render_height(const char * string) {
 }
 
 void render_create(const char * file, unsigned indent) {
-    unsigned width  = get_render_width(file);
-    unsigned height = get_render_height(file);
+    unsigned width  = font_width  * get_render_width(file);
+    unsigned height = font_height * get_render_height(file);
 
     render_data = calloc(width * height, sizeof(*render_data));
 
     for (unsigned y = 0; y < height; ++y) {
         for (unsigned x = 0; x < width; ++x) {
-            render_data[y * width + x] = render_background;
+            render_data[y * width + x] = render_empty;
         }
     }
 
@@ -106,28 +104,34 @@ void render_delete(void) {
     free(render_data);
 }
 
-void render_character(char code, unsigned x, unsigned y, unsigned colour) {
+void render_character(char code, unsigned x, unsigned y) {
     for (unsigned index = 0; index < font_width * font_height; ++index) {
         unsigned u = index / font_width + y;
         unsigned v = index % font_width + x;
 
         unsigned c = font_glyph[(unsigned)(code - ' ')] >> index;
 
-        render[u * render_width + v] = (c & 1) ? colour : render_background;
+        render_data[u * render_width + v] = (c & 1)
+                                          ? render_colour
+                                          : render_empty;
     }
 }
 
-void render_string(const char * string, unsigned x, unsigned y, unsigned colour) {
+void render_string(const char * string, unsigned x, unsigned y) {
     for (unsigned index = 0; string[index] != '\0'; ++index) {
         if ((string[index] >= (char)0) && (string[index] <= (char)31)) {
             // I can't handle X and Y here on new line and tabulator.
-            // It requires changing the interface or making them global variables.
+            // It requires changing the interface or making them variables.
             return;
         }
 
-        render_character(string[index], x, y, colour);
+        render_character(string[index], x, y);
     }
     // You want to add to Y 'font_height' plus padding if you want on new line.
     // And you want to add to X 'strlen' of string, and some N for tabulator.
     // Do that only after this function finishes, otherwise there'll be offset.
+}
+
+void set_colour(unsigned red, unsigned green, unsigned blue) {
+    render_colour = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
 }
