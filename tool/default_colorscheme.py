@@ -37,6 +37,9 @@ def default_color_scheme(code : int) -> (int, int, int):
 def rgb2escape(rgb : (int, int, int)) -> str:
     return "\033[38;2;{};{};{}m".format(*rgb)
 
+#for i in range(256):
+#	print(rgb2escape(default_color_scheme(i)) + "#", end='')
+#	if ((i+1) % 8) == 0: print('')
+
 for i in range(256):
-	print(rgb2escape(default_color_scheme(i)) + "#", end='')
-	if ((i+1) % 8) == 0: print('')
+	print("[{}] = 0xff{}{}{}".format(i, *[hex(i)[2:] for h in default_color_scheme(i)]))
