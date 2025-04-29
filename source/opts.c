@@ -1,3 +1,43 @@
+#include "opts.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <getopt.h>
+
+static
+void usage(void) {
+    puts(
+        "??? [options]\n"
+        "\t-v        : print version and exit\n"
+        "\t-h        : print help and exit\n"
+        "\t-o <file> : specify output"
+    );
+}
+
 void parse_args(const int argc, const char * const * const argv) {
-    ;
+    int opt;
+
+    opterr = 0; // suppress default getopt error messages
+
+    while ((opt = getopt(argc, (char**)argv, "hvo:")) != -1) {
+        switch (opt) {
+            case 'h': {
+                usage();
+                exit(0);
+            } break;
+            case 'v': {
+                puts(
+                    #include "version.inc"
+                );
+                exit(0);
+            } break;
+            case 'o': {
+                output_filename = optarg;
+            } break;
+            case '?': {
+                fprintf(stderr, "Unknown argument '-%c'.\n", optopt);
+                exit(1);
+            }
+        }
+    }
 }

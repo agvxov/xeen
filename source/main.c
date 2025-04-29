@@ -7,6 +7,8 @@
 //  if escape then set formatting flag
 //  else render character to canvas
 
+char * output_filename = "current_thing.png"; // XXX change once we have a name
+
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
