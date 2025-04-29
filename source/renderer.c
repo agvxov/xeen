@@ -2,21 +2,13 @@
 
 #include <stdlib.h>
 
-#define font_width  ( 8)
-#define font_height ( 8)
-#define font_count  (96)
-
 // Made these global variables in order to reduce argument passing.
-static unsigned * render_data   = NULL;
-static unsigned   render_width  = 0;
-static unsigned   render_height = 0;
-static unsigned   render_indent = 4;
-static unsigned   render_colour = 0xff000000;
-static unsigned   render_empty  = 0xff000000;
+static unsigned render_colour = 0xff000000;
+static unsigned render_empty  = 0xff000000;
 
 // Passed the limit...
 static
-const unsigned long font_glyph[font_count] = {
+const unsigned long font_glyph[96] = {
     0x0000000000000000, 0x00180018183c3c18, 0x0000000000363636, 0x006c6cfe6cfe6c6c,
     0x00187ed07c16fc30, 0x0060660c18306606, 0x00dc66b61c36361c, 0x0000000000181818,
     0x0030180c0c0c1830, 0x000c18303030180c, 0x0000187e3c7e1800, 0x000018187e181800,
@@ -42,6 +34,11 @@ const unsigned long font_glyph[font_count] = {
     0x00663c183c660000, 0x3c607c6666660000, 0x007e0c18307e0000, 0x003018180e181830,
     0x0018181818181818, 0x000c18187018180c, 0x000000000062d68c, 0x0000000000000000
 };
+
+unsigned * render_data   = NULL;
+unsigned   render_width  = 0;
+unsigned   render_height = 0;
+unsigned   render_indent = 4;
 
 static
 unsigned get_render_width(const char * string) {
