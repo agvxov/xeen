@@ -7,7 +7,7 @@
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
-char * output_filename = "current_thing.png"; // XXX change once we have a name
+char * output_filename = "xeen.png"; // XXX change once we have a name
 int tab_width = 8;
 
 #define READ_BATCH_SIZE 64
@@ -42,7 +42,7 @@ signed main(const int argc, const char * const argv[]) {
 
     xeen(input, input_len);
 
-    export_png_image("lol.png", render_data, render_width, render_height);
+    export_png_image(output_filename, render_data, render_width, render_height);
 
     render_delete();
 
