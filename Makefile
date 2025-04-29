@@ -4,7 +4,6 @@
 # --- Paths / files
 SOURCE.d := source/
 OBJECT.d := object/
-LIB.d	 := library/
 
 SOURCE := main.c opts.c sds.c renderer.c exporter.c
 OBJECT := ${SOURCE}
@@ -38,7 +37,7 @@ endif
 
 CFLAGS += -std=c2x
 
-CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d} -I${LIB.d}
+CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d}
 LDLIBS := -lpng
 
 # --- Rule Section ---
@@ -54,7 +53,7 @@ ${OUT}: ${GENOBJECT} ${OBJECT}
 	flex -o ${OBJECT.d}/$@ --header=${OBJECT.d}/$(subst .c,.h,$@) $?
 
 %.yy.o: %.yy.c
-	${COMPILE.c} -o ${OBJECT.d}/$@ $< -fpermissive
+	${COMPILE.c} -o ${OBJECT.d}/$@ ${OBJECT.d}/$< -fpermissive
 
 test:
 	cmdtest --fast
