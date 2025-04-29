@@ -15,13 +15,20 @@
     size_t x = 0;
     size_t y = 0;
 %}
+
+CSI     \033\[
+
+%x IN_CONTROL_SEQUENCE
+
 %option noyywrap nodefault
 %option prefix="thing"
 %%
+{SCI}   {
+            BEGIN IN_CONTROL_SEQUENCE;
+        }
 \t      {
             x += font_width * render_indent;
         }
-
 .       {
             render_character(yytext[0], x, y);
             x += font_width;
@@ -30,6 +37,21 @@
             x *= 0;
             y += font_height;
         }
+
+<IN_CONTROL_SEQUENCE>{
+1       {
+            // bold
+        }
+[0-9]*  {
+            int value;
+            sscanf(yytext, "%d", value);
+            // set renderer
+        }
+;       { ; }
+m       {
+            BEGIN INITIAL;
+        }
+}
 %%
 
 int mythinglex(char * str, size_t n) {
