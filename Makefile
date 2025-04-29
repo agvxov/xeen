@@ -50,10 +50,10 @@ ${OUT}: ${GENOBJECT} ${OBJECT}
 	${COMPILE.c} -o ${OBJECT.d}/$@ $<
 
 %.yy.c: %.l
-	flex -o ${OBJECT.d}/$@ --header=${OBJECT.d}/$(subst .c,.h,$@) $?
+	flex ${LFLAGS} -o ${OBJECT.d}/$@ --header=${OBJECT.d}/$(subst .c,.h,$@) $?
 
 %.yy.o: %.yy.c
-	${COMPILE.c} -o ${OBJECT.d}/$@ ${OBJECT.d}/$< -fpermissive
+	${COMPILE.c} -o ${OBJECT.d}/$@ ${OBJECT.d}/$< -fpermissive -Wno-sign-compare
 
 test:
 	cmdtest --fast
