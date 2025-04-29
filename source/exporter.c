@@ -3,16 +3,20 @@
 #include <stdio.h>
 #include <png.h>
 
-// I'm aware that this shit passed 80 character limit, I'll fix it...
-signed export_png_image(const char * path, const unsigned * data, unsigned width, unsigned height) {
+signed export_png_image(const char     * path,
+                        const unsigned * data,
+                              unsigned   width,
+                              unsigned   height) {
     png_image image = { 0 };
 
-    // We can add checks here to see if file path or data is NULL, or if size is meaningful.
+    // We can add checks here to see if file path or data is NULL.
     // if ((width > 4096) || (height > 8192)) {
     //     fprintf(stderr, "What the fuck are you doing boy...?\n");
+    //     return 1;
     // }
     // if ((path == NULL) || (data == NULL)) {
-    //     dictate("You write evil code!\n"); // After including dictate header file.
+    //     fprintf(stderr, "You write evil code!\n");
+    //     return 1;
     // }
 
     image.version = PNG_IMAGE_VERSION;
@@ -24,5 +28,5 @@ signed export_png_image(const char * path, const unsigned * data, unsigned width
 
     png_image_free(&image);
 
-    return (0);
+    return 0;
 }
