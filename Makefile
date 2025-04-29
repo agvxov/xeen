@@ -9,7 +9,7 @@ SOURCE := main.c opts.c sds.c renderer.c exporter.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
-GENSOURCE := dimensions.yy.c thing.yy.c
+GENSOURCE := dimensions.yy.c xeen.yy.c
 GENOBJECT := ${GENSOURCE}
 GENOBJECT := $(subst .c,.o,${GENOBJECT})
 
@@ -19,7 +19,7 @@ vpath %.yy.c ${OBJECT.d}
 vpath %.o ${OBJECT.d}
 vpath %.yy.o ${OBJECT.d}
 
-OUT := example.out
+OUT := xeen
 
 # --- Tools/Flags
 ifeq (${DEBUG}, 1)

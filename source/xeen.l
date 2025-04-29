@@ -23,7 +23,7 @@ CSI     \033\[
 %option noyywrap nodefault
 %option prefix="thing"
 %%
-{SCI}   {
+{CSI}   {
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
@@ -54,7 +54,7 @@ m       {
 }
 %%
 
-int mythinglex(char * str, size_t n) {
+int xeen(char * str, size_t n) {
     int r;
     input_str = str;
     len       = n;

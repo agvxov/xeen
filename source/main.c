@@ -4,10 +4,8 @@
 #include "renderer.h"
 #include "exporter.h"
 
-// fill()
-// for input
-//  if escape then set formatting flag
-//  else render character to canvas
+extern int get_dimensions(char * str, size_t n, int * h, int * w);
+extern int xeen(char * str, size_t n);
 
 char * output_filename = "current_thing.png"; // XXX change once we have a name
 int tab_width = 8;
@@ -27,9 +25,6 @@ sds stdin2str(void) {
     return r;
 }
 
-extern int myyylex(char * str, size_t n, int * h, int * w);
-extern int mythinglex(char * str, size_t n);
-
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
@@ -37,7 +32,7 @@ signed main(const int argc, const char * const argv[]) {
     size_t input_len = sdslen(input);
 
     int w, h;
-    myyylex((char*)input, input_len, &h, &w);
+    get_dimensions((char*)input, input_len, &h, &w);
 
     set_colour(255, 127, 63);
 
@@ -45,7 +40,7 @@ signed main(const int argc, const char * const argv[]) {
 
     printf("Rendering image %i x %i...\n", render_width, render_height);
 
-    mythinglex(input, input_len);
+    xeen(input, input_len);
 
     export_png_image("lol.png", render_data, render_width, render_height);
 

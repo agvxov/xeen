@@ -39,7 +39,7 @@ escape_sequence \033\[[0-9;]+m
                     }
 %%
 
-int myyylex(char * str, size_t n, int * h, int * w) {
+int get_dimensions(char * str, size_t n, int * h, int * w) {
     int r;
     input_str = str;
     len       = n;
