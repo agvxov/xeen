@@ -27,46 +27,24 @@ sds stdin2str(void) {
 }
 
 extern int myyylex(char * str, size_t n, int * h, int * w);
+extern int mythinglex(char * str, size_t n);
 
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
     sds input = stdin2str();
+    size_t input_len = sdslen(input);
 
     int w, h;
-    myyylex((char*)input, sdslen(input), &h, &w);
-
-    /* NOTE: i have no clue how libpng works and how you prefer to use it;
-     *        bellow im guessing how it will look, correct me where im wrong
-     */
-
-    // calculate dimension
-    // create canvas
-    // call fill()
-    // write to disk
-    // free
+    myyylex((char*)input, input_len, &h, &w);
 
     set_colour(255, 127, 63);
-
-    unsigned x = 0, y = 0;
 
     render_create(input, 4);
 
     printf("Rendering image %i x %i...\n", render_width, render_height);
 
-    printf("%s", input); // ANON
-
-    for (unsigned index = 0; input[index] != '\0'; ++index) {
-        if (input[index] == '\t') {
-            x += font_width * render_indent;
-        } else if (input[index] == '\n') {
-            x *= 0;
-            y += font_height;
-        } else {
-            render_character(input[index], x, y);
-            x += font_width;
-        }
-    }
+    mythinglex(input, input_len); 
 
     export_png_image("lol.png", render_data, render_width, render_height);
 

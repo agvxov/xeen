@@ -9,7 +9,7 @@ SOURCE := main.c opts.c sds.c renderer.c exporter.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
-GENSOURCE := dimensions.yy.c
+GENSOURCE := dimensions.yy.c thing.yy.c
 GENOBJECT := ${GENSOURCE}
 GENOBJECT := $(subst .c,.o,${GENOBJECT})
 
