@@ -5,7 +5,7 @@ Xeen renders its input into a PNG as if it was a terminal.
 It understands what formatting related ANSI escape codes are.
 
 ## Usage
-The intended use of ??? is to create screenshot like pictures of code and such,
+The intended use of Xeen is to create screenshot like pictures of code and such,
 without monitor-size or shaky-hand interference.
 
 ```
