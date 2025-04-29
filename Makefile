@@ -6,16 +6,19 @@ SOURCE.d := source/
 OBJECT.d := object/
 LIB.d	 := library/
 
-SOURCE := main.c opts.c
+SOURCE := main.c opts.c sds.c
 OBJECT := ${SOURCE}
-OBJECT := $(subst .cpp,.o,${OBJECT})
 OBJECT := $(subst .c,.o,${OBJECT})
 
-GENSOURCE :=
+GENSOURCE := dimensions.yy.c
+GENOBJECT := ${GENSOURCE}
+GENOBJECT := $(subst .c,.o,${GENOBJECT})
 
 vpath %.c ${SOURCE.d}
 vpath %.l ${SOURCE.d}
 vpath %.yy.c ${OBJECT.d}
+vpath %.o ${OBJECT.d}
+vpath %.yy.o ${OBJECT.d}
 
 OUT := example
 
@@ -42,20 +45,17 @@ LDLIBS += -ldictate # XXX
 # --- Rule Section ---
 all: ${OUT}
 
-${OUT}: ${GENSOURCE} ${OBJECT}
-	${LINK.cpp} -o $@ $(addprefix ${OBJECT.d}/,${OBJECT} ${GENSOURCE}) ${LDLIBS}
+${OUT}: ${GENOBJECT} ${OBJECT}
+	${LINK.c} -o $@ $(addprefix ${OBJECT.d}/,${OBJECT} ${GENOBJECT}) ${LDLIBS}
 
 %.o: %.c
 	${COMPILE.c} -o ${OBJECT.d}/$@ $<
 
-%.o: %.cpp
-	${COMPILE.cpp} -o ${OBJECT.d}/$@ $<
-
 %.yy.c: %.l
-	flex -o ${OBJECT.d}/$@ --header=${OBJECT.d}/$(subst .c,.h,$@) $? 
+	flex -o ${OBJECT.d}/$@ --header=${OBJECT.d}/$(subst .c,.h,$@) $?
 
-%.yy.o: ${OBJECT.d}/%.yy.c
-	${COMPILE.c} -o $@ $<
+%.yy.o: %.yy.c
+	${COMPILE.c} -o ${OBJECT.d}/$@ $< -fpermissive
 
 test:
 	cmdtest --fast
