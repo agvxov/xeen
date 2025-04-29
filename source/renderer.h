@@ -9,7 +9,7 @@ extern unsigned   render_width;
 extern unsigned   render_height;
 extern unsigned   render_indent;
 
-extern void render_create(const char * file, unsigned indent);
+extern void render_create(const char * file, unsigned width, unsigned height);
 extern void render_delete(void);
 
 extern void render_character(char code, unsigned x, unsigned y);

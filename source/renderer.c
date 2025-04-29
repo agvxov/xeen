@@ -48,49 +48,9 @@ unsigned   render_width  = 0;
 unsigned   render_height = 0;
 unsigned   render_indent = 4;
 
-static
-unsigned get_render_width(const char * string) {
-    unsigned width = 0;
-    unsigned count = 0;
-
-    for (unsigned index = 0; string[index] != '\0'; ++index) {
-        if (string[index] == '\x1b') {
-            for (++index; string[index] != '\0'; ++index) {
-                if (string[index] == 'm') {
-                    break;
-                }
-            }
-        } else if (string[index] == '\t') {
-            count += render_indent;
-        } else if (string[index] == '\n') {
-            width = (++count > width) ? count : width;
-            count = 0;
-        } else {
-            ++count;
-        }
-    }
-
-    // Dunno why this happens...
-    return width - 1;
-}
-
-static
-unsigned get_render_height(const char * string) {
-    unsigned height = 0;
-
-    for (unsigned index = 0; string[index] != '\0'; ++index) {
-        if (string[index] == '\n') {
-            ++height;
-        }
-    }
-
-    // Bit of padding?
-    return height + 1;
-}
-
-void render_create(const char * file, unsigned indent) {
-    unsigned width  = font_width  * get_render_width(file);
-    unsigned height = font_height * get_render_height(file);
+void render_create(const char * file, unsigned width, unsigned height) {
+    width  *= font_width;
+    height *= font_height;
 
     render_data = calloc(width * height, sizeof(*render_data));
 
@@ -102,7 +62,6 @@ void render_create(const char * file, unsigned indent) {
 
     render_width  = width;
     render_height = height;
-    render_indent = indent;
 }
 
 void render_delete(void) {
