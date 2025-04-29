@@ -19,7 +19,7 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:")) != -1) {
+    while ((opt = getopt(argc, (char**)argv, "hvo:t:")) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
@@ -33,6 +33,13 @@ void parse_args(const int argc, const char * const * const argv) {
             } break;
             case 'o': {
                 output_filename = optarg;
+            } break;
+            case 't': {
+                int e = sscanf(optarg, "%d", &tab_width);
+                if (!e) {
+                    fprintf(stderr, "Invalid tab width '%s'.\n", optarg);
+                    exit(1);
+                }
             } break;
             case '?': {
                 fprintf(stderr, "Unknown argument '-%c'.\n", optopt);

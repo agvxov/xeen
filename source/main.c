@@ -10,6 +10,7 @@
 //  else render character to canvas
 
 char * output_filename = "current_thing.png"; // XXX change once we have a name
+int tab_width = 8;
 
 #define READ_BATCH_SIZE 64
 
