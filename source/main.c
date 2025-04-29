@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "sds.h"
 #include "opts.h"
+#include "renderer.h"
+#include "exporter.h"
 
 // fill()
 // for input
@@ -44,6 +46,32 @@ signed main(const int argc, const char * const argv[]) {
     // call fill()
     // write to disk
     // free
+
+    set_colour(255, 127, 63);
+
+    unsigned x = 0, y = 0;
+
+    render_create(input, 4);
+
+    printf("Rendering image %i x %i...\n", render_width, render_height);
+
+    printf("%s", input); // ANON
+
+    for (unsigned index = 0; input[index] != '\0'; ++index) {
+        if (input[index] == '\t') {
+            x += font_width * render_indent;
+        } else if (input[index] == '\n') {
+            x *= 0;
+            y += font_height;
+        } else {
+            render_character(input[index], x, y);
+            x += font_width;
+        }
+    }
+
+    export_png_image("lol.png", render_data, render_width, render_height);
+
+    render_delete();
 
     sdsfree(input);
 
