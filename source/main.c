@@ -40,11 +40,11 @@ signed main(const int argc, const char * const argv[]) {
 
     set_colour(255, 127, 63);
 
-    render_create(input, 4);
+    render_create(input, w, h);
 
     printf("Rendering image %i x %i...\n", render_width, render_height);
 
-    mythinglex(input, input_len); 
+    mythinglex(input, input_len);
 
     export_png_image("lol.png", render_data, render_width, render_height);
 
