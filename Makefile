@@ -40,7 +40,6 @@ CFLAGS += -std=c2x
 
 CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d} -I${LIB.d}
 LDLIBS := -lpng
-LDLIBS += -ldictate # XXX
 
 # --- Rule Section ---
 all: ${OUT}

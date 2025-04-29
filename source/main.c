@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <dictate.h>    // XXX remove after the development phase is done
 #include "sds.h"
 #include "opts.h"
 
@@ -35,8 +34,6 @@ signed main(const int argc, const char * const argv[]) {
 
     int w, h;
     myyylex((char*)input, sdslen(input), &h, &w);
-
-    dictate(h, " ", w, "\n");
 
     /* NOTE: i have no clue how libpng works and how you prefer to use it;
      *        bellow im guessing how it will look, correct me where im wrong
