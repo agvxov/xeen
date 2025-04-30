@@ -2,7 +2,6 @@
 #include "sds.h"
 #include "opts.h"
 #include "renderer.h"
-#include "exporter.h"
 #include "colorscheme.h"
 
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
@@ -39,11 +38,9 @@ signed main(const int argc, const char * const argv[]) {
 
     render_create(w, h);
 
-    printf("Rendering image %i x %i...\n", render_width, render_height);
-
     xeen(input, input_len);
 
-    export_png_image(output_filename, render_data, render_width, render_height);
+    export_png_image(output_filename);
 
     render_delete();
 

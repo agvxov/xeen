@@ -96,17 +96,19 @@ signed render_character(char character, unsigned x, unsigned y) {
     unsigned char pixels[128*128] = { 0 };
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+
     float x_shift = x - floorf(x);
 
     stbtt_GetCodepointHMetrics(&font, character, &advance, &lsb);
 
-    stbtt_GetCodepointBitmapBoxSubpixel(&font, character, scale, scale, x_shift,
-                                        0, &x0, &y0, &x1, &y1);
+    stbtt_GetCodepointBitmapBoxSubpixel(&font, character, font_scale,
+                                        font_scale, x_shift, 0, &x0, &y0, &x1,
+                                        &y1);
 
     //~signed off = roundf(lsb * scale) + y0;
 
     stbtt_MakeCodepointBitmapSubpixel(&font, pixels, x1 - x0, y1 - y0,
-                                      image_width, scale, scale, x_shift, 0,
+                                      128, font_scale, font_scale, x_shift, 0,
                                       character);
 
     for (int i = 0; i < 128; ++i) {
@@ -117,7 +119,7 @@ signed render_character(char character, unsigned x, unsigned y) {
         }
     }
 
-    return (signed)roundf(advance * scale);
+    return (signed)roundf(advance * font_scale);
 }
 
 signed render_string(const char * string, unsigned x, unsigned y) {
@@ -127,7 +129,7 @@ signed render_string(const char * string, unsigned x, unsigned y) {
         if ((string[index] >= (char)0) && (string[index] <= (char)31)) {
             // I can't handle X and Y here on new line and tabulator.
             // It requires changing the interface or making them variables.
-            return;
+            return 16; // Hack
         }
 
         rounding += render_character(string[index], x, y);

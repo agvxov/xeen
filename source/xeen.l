@@ -31,11 +31,10 @@ CSI     \033\[
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            x += font_width * render_indent;
+            x += font_width * 4; // CHANGED BY XOLATILE
         }
 .       {
-            render_character(yytext[0], x, y);
-            x += font_width;
+            x += render_character(yytext[0], x, y); // CHANGED BY XOLATILE
         }
 \n      {
             x *= 0;

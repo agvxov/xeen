@@ -5,7 +5,7 @@
 SOURCE.d := source/
 OBJECT.d := object/
 
-SOURCE := main.c opts.c sds.c renderer.c exporter.c colorscheme.c
+SOURCE := main.c opts.c sds.c renderer.c colorscheme.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
@@ -38,7 +38,7 @@ endif
 CFLAGS += -std=c2x
 
 CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d}
-LDLIBS := -lpng
+LDLIBS := -lm
 
 # --- Rule Section ---
 all: ${OUT}
