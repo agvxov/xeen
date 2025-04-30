@@ -2,8 +2,7 @@
 
 #include <stdlib.h>
 
-       colour_t render_colour = 0xff000000;
-static unsigned render_empty  = 0xff000000;
+static colour_t render_empty  = 0xff000000;
 
 // Passed the limit...
 static
@@ -46,6 +45,7 @@ unsigned * render_data   = NULL;
 unsigned   render_width  = 0;
 unsigned   render_height = 0;
 unsigned   render_indent = 4;
+colour_t   render_colour = 0xff000000;
 
 void render_create(unsigned width, unsigned height) {
     width  *= font_width;
