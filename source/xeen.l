@@ -35,8 +35,7 @@ CSI     \033\[
             x += font_width * tab_width;
         }
 .       {
-            render_character(yytext[0], x, y);
-            x += font_width;
+            x += render_character(yytext[0], x, y); // CHANGED BY XOLATILE
         }
 \n      {
             x *= 0;
