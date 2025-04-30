@@ -18,7 +18,7 @@ static colour_t   render_empty  = 0xff000000;
 
 static stbtt_fontinfo font = { 0 };
 
-static signed font_size     = 18;
+static signed font_size     = 32;
 static float  font_scale    = 0;
 static signed font_ascent   = 0;
 static signed font_descent  = 0;
@@ -62,9 +62,17 @@ static signed font_line_gap = 0;
 
 colour_t render_colour = 0xff000000;
 
+static colour_t get_colour(unsigned char alpha) {
+    colour_t r = (((render_colour >>  0) & 0xff) * alpha) / 255;
+    colour_t g = (((render_colour >>  8) & 0xff) * alpha) / 255;
+    colour_t b = (((render_colour >> 16) & 0xff) * alpha) / 255;
+
+    return 0xff000000 | (b << 16) | (g << 8) | (r << 0);
+}
+
 void render_create(unsigned width, unsigned height) {
-    width  *= font_width;
-    height *= font_height;
+    width  *= 4 * font_width;
+    height *= 4 * font_height;
 
     render_data = calloc(width * height, sizeof(*render_data));
 
@@ -82,7 +90,8 @@ void render_delete(void) {
     free(render_data);
 }
 
-signed render_character(char character, unsigned x, unsigned y) {
+void render_character(char character, unsigned x, unsigned y, signed * offx,
+                      signed * offy) {
     //~for (unsigned index = 0; index < font_width * font_height; ++index) {
         //~unsigned u = index / font_width + y;
         //~unsigned v = index % font_width + x;
@@ -93,53 +102,95 @@ signed render_character(char character, unsigned x, unsigned y) {
                                           //~? render_colour
                                           //~: render_empty;
     //~}
-    unsigned char pixels[128*128] = { 0 };
+    if ((character <= 31) || (character >= 127)) return;
+
+    unsigned char pixels[192*192] = { 0 };
+
+    //~signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+
+    //~//float x_shift = x - floorf(x);
+
+    //~stbtt_GetCodepointHMetrics(&font, character, &advance, &lsb);
+
+    //~stbtt_GetCodepointBitmapBox(&font, character, font_scale, font_scale,
+                                //~&x0, &y0, &x1, &y1);
+
+    //~*offx = x1 - x0;
+    //~*offy = y1 - y0;
+
+    //~signed off = roundf(lsb * font_scale) + y0 * 192;
+
+    //~printf ("\x1b[1;31mRendering glyph '%c' of %i x %i, off %i.\x1b[0m\n", character, *offx, *offy, off);
+
+    //~stbtt_MakeCodepointBitmap(&font, pixels, x1 - x0, y1 - y0, 192,
+                              //~font_scale, font_scale, character);
+
+    //~for (int i = 0; i < 192; ++i) {
+        //~for (int j = 0; j < 192; ++j) {
+            //~unsigned data = get_colour(pixels[i * 192 + j]);
+            //~render_data[(y + i) * render_width + (x + j)] = data;
+        //~}
+    //~}
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-    float x_shift = x - floorf(x);
+    //~float x_shift = (float) x - floorf((float) x);
 
     stbtt_GetCodepointHMetrics(&font, character, &advance, &lsb);
+    //~stbtt_GetCodepointBitmapBoxSubpixel(&font, character, font_scale, font_scale, x_shift, 0, &x0, &y0, &x1, &y1);
+    stbtt_GetCodepointBitmapBoxSubpixel(&font, character, font_scale, font_scale, 0, 0, &x0, &y0, &x1, &y1);
 
-    stbtt_GetCodepointBitmapBoxSubpixel(&font, character, font_scale,
-                                        font_scale, x_shift, 0, &x0, &y0, &x1,
-                                        &y1);
+    signed off = roundf(lsb * font_scale) + (font_ascent + y0 - 0) * 192 - 0;
 
-    //~signed off = roundf(lsb * scale) + y0;
+    off = (off < 0) ? 0 : off;
 
-    stbtt_MakeCodepointBitmapSubpixel(&font, pixels, x1 - x0, y1 - y0,
-                                      128, font_scale, font_scale, x_shift, 0,
-                                      character);
+    *offx = x1 - x0;
+    *offy = y1 - y0;
 
-    for (int i = 0; i < 128; ++i) {
-        for (int j = 0; j < 128; ++j) {
-            render_data[(y + i) * render_width + (x + j)] = pixels[i * 128 + j]
-                                                          ? render_colour
-                                                          : render_empty;
+    printf ("\x1b[1;31mRendering glyph '%c' of %i x %i, off %i, left %i.\x1b[0m\n", character, *offx, *offy, off, lsb);
+
+    stbtt_MakeCodepointBitmapSubpixel(&font, pixels + off, x1 - x0, y1 - y0,
+                                     //~192, font_scale, font_scale, x_shift, 0, character);
+                                     192, font_scale, font_scale, 0, 0, character);
+
+    for (int i = 0; i < 192; ++i) {
+        for (int j = 0; j < 192; ++j) {
+            unsigned data = get_colour(pixels[i * 192 + j]);
+            if (render_data[(y + i) * render_width + (x + j)] == render_empty) {
+                render_data[(y + i) * render_width + (x + j)] = data;
+            }
         }
     }
 
-    return (signed)roundf(advance * font_scale);
+    *offx = roundf(advance * font_scale);
+    //~*offx += roundf(stbtt_GetCodepointKernAdvance(&font, character, character) * scale);
 }
 
-signed render_string(const char * string, unsigned x, unsigned y) {
-    signed rounding = 0;
+//~signed render_string(const char * string, unsigned x, unsigned y, signed * offx,
+                     //~signed * offy) {
+    //~signed rounding = 0;
 
-    for (unsigned index = 0; string[index] != '\0'; ++index) {
-        if ((string[index] >= (char)0) && (string[index] <= (char)31)) {
-            // I can't handle X and Y here on new line and tabulator.
-            // It requires changing the interface or making them variables.
-            return 16; // Hack
-        }
+    //~for (unsigned index = 0; string[index] != '\0'; ++index) {
+        //~if ((string[index] >= (char)0) && (string[index] <= (char)31)) {
+            //~// I can't handle X and Y here on new line and tabulator.
+            //~// It requires changing the interface or making them variables.
+            //~return 16; // Hack
+        //~}
 
-        rounding += render_character(string[index], x, y);
-    }
+        //~offx += render_character(string[index], x, y);
 
-    return rounding;
-    // You want to add to Y 'font_height' plus padding if you want on new line.
-    // And you want to add to X 'strlen' of string, and some N for tabulator.
-    // Do that only after this function finishes, otherwise there'll be offset.
-}
+        //~if (string[index + 1] != '\0') {
+            //~float kern = stbtt_GetCodepointKernAdvance(&font, string[index],
+                                                       //~string[index + 1]);
+            //~x += roundf(kern * font_scale);
+        //~}
+    //~}
+
+    //~return rounding;
+    //~// You want to add to Y 'font_height' plus padding if you want on new line.
+    //~// And you want to add to X 'strlen' of string, and some N for tabulator.
+    //~// Do that only after this function finishes, otherwise there'll be offset.
+//~}
 
 colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
     colour_t r;

@@ -1,6 +1,5 @@
 %{
     #include <stdlib.h>
-    #include "opts.h"
     #include "renderer.h"
     #include "colorscheme.h"
 
@@ -32,14 +31,17 @@ CSI     \033\[
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            x += font_width * tab_width;
+            x += font_width * 8; // CHANGED BY XOLATILE
         }
 .       {
-            x += render_character(yytext[0], x, y); // CHANGED BY XOLATILE
+            int offx = 0, offy = 0;
+            render_character(yytext[0], x, y, &offx, &offy); // CHANGED BY XOLATILE
+            x += offx;
+            //y += offy; // DO NOT UNCOMMENT FOR NOW PLEASE
         }
 \n      {
             x *= 0;
-            y += font_height;
+            y += font_height * 3; // HACKED
         }
 
 <IN_CONTROL_SEQUENCE>{
