@@ -6,19 +6,17 @@
 
 typedef unsigned colour_t;
 
-extern unsigned * render_data;
-extern unsigned   render_width;
-extern unsigned   render_height;
-extern unsigned   render_indent;
-extern colour_t   render_colour;
+extern colour_t render_colour;
 
 extern void render_create(unsigned width, unsigned height);
 extern void render_delete(void);
 
-extern void render_character(char code, unsigned x, unsigned y);
-
-extern void render_string(const char * string, unsigned x, unsigned y);
+extern signed render_character(char character, unsigned x, unsigned y);
+extern signed render_string(const char * string, unsigned x, unsigned y);
 
 extern colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
+
+extern signed import_ttf_font(const char * name);
+extern signed export_png_image(const char * name);
 
 #endif
