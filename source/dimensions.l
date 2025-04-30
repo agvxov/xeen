@@ -1,5 +1,6 @@
 %{
     #include <stdlib.h>
+    #include "opts.h"
 
     static char * input_str;
     static size_t len;
@@ -29,6 +30,9 @@ escape_sequence \033\[[0-9;]+m
 {escape_sequence}   { ; }
 .                   {
                         ++line_width;
+                    }
+\t                  {
+                        line_width += tab_width;
                     }
 \n                  {
                         register_line();

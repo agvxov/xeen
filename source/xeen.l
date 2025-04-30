@@ -1,5 +1,6 @@
 %{
     #include <stdlib.h>
+    #include "opts.h"
     #include "renderer.h"
     #include "colorscheme.h"
 
@@ -31,7 +32,7 @@ CSI     \033\[
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            x += font_width * render_indent;
+            x += font_width * tab_width;
         }
 .       {
             render_character(yytext[0], x, y);
