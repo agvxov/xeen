@@ -4,3 +4,5 @@
 *.out
 xeen.png
 xeen
+tmp-cmdtest-*/
+.cmdtest-filter
