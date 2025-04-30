@@ -14,9 +14,6 @@ extern void render_delete(void);
 extern void render_character(char character, unsigned x, unsigned y,
                              signed * offx, signed * offy);
 
-//~extern signed render_string(const char * string, unsigned x, unsigned y,
-                            //~signed * offx, signed * offy);
-
 extern colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
 
 extern signed import_ttf_font(const char * name);
