@@ -7,11 +7,12 @@
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
-char * output_filename = "xeen.png";
+char * output_filename = "xeen.png"; // XXX change once we have a name
 int tab_width = 8;
 
+#define READ_BATCH_SIZE 64
+
 sds stdin2str(void) {
-  #define READ_BATCH_SIZE 64
     sds r = sdsnew("");
 
     char buffer[READ_BATCH_SIZE + 1];
@@ -22,34 +23,29 @@ sds stdin2str(void) {
     } while (read_count == READ_BATCH_SIZE);
 
     return r;
-  #undef READ_BATCH_SIZE
 }
 
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
-    sds input        = stdin2str();
+    sds input = stdin2str();
     size_t input_len = sdslen(input);
 
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
 
-    render_create(w, h);
     render_colour = default_color;
 
-
-  #ifdef DEBUG
-    printf("Rendering image %i x %i...\n", render_width, render_height);
-  #endif
+    import_ttf_font("arial.ttf");
 
     render_create(w, h);
-
 
     xeen(input, input_len);
 
     export_png_image(output_filename);
 
     render_delete();
+
     sdsfree(input);
 
     return 0;
