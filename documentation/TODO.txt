@@ -3,5 +3,3 @@
 + unicode is blocked from render_character currently; it should handle it gracefully even if it cant render it
 + could you expand the templeOS font with box drawing characters?
 + why are my color changes not showing? theoretically im setting the render color, but everything is the standard color
-+ what forsaken color scheme format do we want to use? if we decide this it shouldnt be so bad because we have one big array and not much can go wrong with it; also, look how useful the snek was
-+ tab width is half-ass implemented; DO NOT TEST IT YET
