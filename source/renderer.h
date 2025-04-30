@@ -11,8 +11,11 @@ extern colour_t render_colour;
 extern void render_create(unsigned width, unsigned height);
 extern void render_delete(void);
 
-extern signed render_character(char character, unsigned x, unsigned y);
-extern signed render_string(const char * string, unsigned x, unsigned y);
+extern signed render_character(char character, unsigned x, unsigned y,
+                               signed * offx, signed * offy);
+
+extern signed render_string(const char * string, unsigned x, unsigned y,
+                            signed * offx, signed * offy);
 
 extern colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
 
