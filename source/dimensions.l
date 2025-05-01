@@ -25,6 +25,7 @@
 %}
 escape_sequence \033\[[0-9;]+m
 %option noyywrap nodefault
+%option nounput
 %option yylineno
 %%
 {escape_sequence}   { ; }
