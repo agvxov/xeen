@@ -107,10 +107,10 @@ CSI     \033\[
 m                   {
                         BEGIN INITIAL;
                     }
-.|\n                {                                                                       │
-                        fputs("Unknown escape sequence encountered.\n", stderr);            │
-                        return 0;                                                           │
-                    }                                                                       │
+.|\n                {
+                        fputs("Unknown escape sequence encountered.\n", stderr);
+                        return 0;
+                    }
 }
 %%
 
