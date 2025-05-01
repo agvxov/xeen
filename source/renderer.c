@@ -112,7 +112,7 @@ void render_character(char character, unsigned x, unsigned y, signed * offx,
     //~}
     #define scaling (32)
 
-    if ((character <= 31) || (character >= 127)) return;
+    if ((character < 32) || (character > font.numGlyphs)) return;
 
     unsigned char pixels[scaling*scaling] = { 0 };
 
