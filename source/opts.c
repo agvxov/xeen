@@ -1,4 +1,5 @@
 #include "opts.h"
+#include "renderer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:t:")) != -1) {
+    while ((opt = getopt(argc, (char**)argv, "hvo:ts:")) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
@@ -38,6 +39,13 @@ void parse_args(const int argc, const char * const * const argv) {
                 int e = sscanf(optarg, "%d", &tab_width);
                 if (!e) {
                     fprintf(stderr, "Invalid tab width '%s'.\n", optarg);
+                    exit(1);
+                }
+            } break;
+            case 's': {
+                int e = sscanf(optarg, "%d", &font_size);
+                if (!e) {
+                    fprintf(stderr, "Invalid font size '%s'.\n", optarg);
                     exit(1);
                 }
             } break;

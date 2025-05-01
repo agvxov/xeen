@@ -1,10 +1,13 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#define font_width  (8)
-#define font_height (8)
-
 typedef unsigned colour_t;
+
+extern unsigned font_size;
+//~extern unsigned font_pad;
+extern unsigned font_width;
+extern unsigned font_height;
+extern unsigned font_indent;
 
 extern colour_t render_colour;
 
