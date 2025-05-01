@@ -20,7 +20,7 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:ts:")) != -1) {
+    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:")) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
