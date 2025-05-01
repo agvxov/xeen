@@ -1,5 +1,6 @@
 %{
     #include <stdlib.h>
+    #include "opts.h"
     #include "renderer.h"
     #include "colorscheme.h"
 
@@ -31,7 +32,7 @@ CSI     \033\[
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            x += font_width * 8; // CHANGED BY XOLATILE
+            x += font_width * tab_width;
         }
 .       {
             int offx = 0, offy = 0;
@@ -42,6 +43,9 @@ CSI     \033\[
 \n      {
             x *= 0;
             y += font_height * 3; // HACKED
+        }
+\0      {
+            return 0;
         }
 
 <IN_CONTROL_SEQUENCE>{
@@ -104,6 +108,10 @@ CSI     \033\[
 ;                   { ; }
 m                   {
                         BEGIN INITIAL;
+                    }
+.|\n                {
+                        fputs("Unknown escape sequence encountered.\n", stderr);
+                        return 0;
                     }
 }
 %%
