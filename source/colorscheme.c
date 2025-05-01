@@ -3,14 +3,14 @@
 colour_t default_color = 0xffffffff;
 
 colour_t colorscheme[256] = {
-    [0]   = 0xff000000,
-    [1]   = 0xff010101,
-    [2]   = 0xff020202,
-    [3]   = 0xff030303,
-    [4]   = 0xff040404,
-    [5]   = 0xff050505,
-    [6]   = 0xff060606,
-    [7]   = 0xff070707,
+    [0]   = 0xff444444,
+    [1]   = 0xff2222ee,
+    [2]   = 0xff22ee22,
+    [3]   = 0xff22ccee,
+    [4]   = 0xffee4422,
+    [5]   = 0xffee22ee,
+    [6]   = 0xffeeee22,
+    [7]   = 0xffeeeeee,
     [8]   = 0xff080808,
     [9]   = 0xff090909,
     [10]  = 0xff0a0a0a,
