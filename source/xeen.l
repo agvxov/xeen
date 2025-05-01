@@ -18,6 +18,7 @@
 %}
 
 CSI     \033\[
+d       [[:digit:]]
 
 %x IN_CONTROL_SEQUENCE
 
@@ -81,23 +82,23 @@ CSI     \033\[
                         //render_background = colorscheme[value-30];
                     }
                     /* --- 8 BIT COLORS --- */
-38;5;\d+            {
+38;5;{d}+           {
                         int value;
                         sscanf(yytext+(sizeof("38;5;")-1), "%d", &value);
                         render_colour = colorscheme[value];
                     }
-48;5;\d+            {
+48;5;{d}+           {
                         int value;
                         sscanf(yytext+(sizeof("48;5;")-1), "%d", &value);
                         //render_background = colorscheme[value];
                     }
                     /* --- 24 BIT COLOR --- */
-38;2;\d*;\d*;\d*    {
+38;2;{d}*;{d}*;{d}* {
                         int r, g, b;
                         sscanf(yytext+(sizeof("38;2;")-1), "%d;%d;%d", &r, &g, &b);
                         render_colour = rgb2colour_t(r, g, b);
                     }
-48;2;\d*;\d*;\d*    {
+48;2;{d}*;{d}*;{d}* {
                         int r, g, b;
                         sscanf(yytext+(sizeof("48;2;")-1), "%d;%d;%d", &r, &g, &b);
                         //render_background = rgb2colour_t(r, g, b);
