@@ -36,9 +36,13 @@ signed main(const int argc, const char * const argv[]) {
 
     render_colour = default_color;
 
-    import_ttf_font("cmu.ttf");
+    import_ttf_font("temple.ttf");
 
     render_create(w, h);
+
+    //~printf("REMOVE ME: Resolution %i x %i characters.\n", w, h);
+    //~printf("REMOVE ME: Resolution %i x %i pixels.\n", w * 8, h * font_size);
+    //~printf("REMOVE ME: Character is %i x %i pixels.\n", font_width, font_height);
 
     xeen(input, input_len);
 
