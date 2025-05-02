@@ -3,6 +3,27 @@
 const colour_t default_color      = 0xffffffff;
 const colour_t default_background = 0xff000000;
 
+static
+colour_t factor_colour(colour_t colour, float factor) {
+    unsigned char r = (c >> 16) & 0xff;
+    unsigned char g = (c >>  8) & 0xff;
+    unsigned char b = (c >>  0) & 0xff;
+
+    r = (unsigned char)fminf(255, r * factor);
+    g = (unsigned char)fminf(255, g * factor);
+    b = (unsigned char)fminf(255, b * factor);
+
+    return ((r << 16) | (g << 8) | b);
+}
+
+colour_t to_bright(colour_t c) {
+    return factor_colour(c, 1.2f);
+}
+
+colour_t to_faint(colour_t c) {
+    return factor_colour(c, 0.8f);
+}
+
 colour_t colorscheme[256] = {
     [0]   = 0xff000000,
     [1]   = 0xffcd0000,

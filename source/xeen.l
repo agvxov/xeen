@@ -17,6 +17,9 @@
 
     size_t x = 0;
     size_t y = 0;
+
+    extern colour_t to_bright(colour_t c);
+    extern colour_t to_faint(colour_t c);
 %}
 
 CSI             \033\[
@@ -73,7 +76,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                         }
                     }
 2                   { // faint
-                        // XXX (probably mess with the oppacity)
+                        render_fg = to_faint(render_fg);
                     }
 3                   { // italic
                         switch (font_style) {
@@ -97,18 +100,17 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 4[0-7]              { // background
                         int value;
                         sscanf(yytext, "%d", &value);
-                        //render_bg = colorscheme[value-40];
+                        render_bg = colorscheme[value-40];
                     }
 9[0-7]              { // bright
-                        // XXX: im color blind i dont know how to implement this
                         int value;
                         sscanf(yytext, "%d", &value);
-                        render_fg = colorscheme[value-30];
+                        render_fg = to_bright(colorscheme[value-30]);
                     }
 10[0-7]             { // bright background
                         int value;
                         sscanf(yytext, "%d", &value);
-                        render_bg = colorscheme[value-40];
+                        render_bg = to_bright(colorscheme[value-40]);
                     }
                     /* --- 8 BIT COLORS --- */
 38;5;{d}+           {
