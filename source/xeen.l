@@ -32,18 +32,15 @@ d       [[:digit:]]
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            //x += (font_width + font_pad) * font_indent;
             x += font_width * font_indent;
         }
 .       {
             int offx = 0, offy = 0;
             render_character(yytext[0], x, y, &offx, &offy);
-            //x += offx + font_pad;
             x += offx;
         }
 \n      {
             x *= 0;
-            //y += font_height + font_pad;
             y += font_height;
         }
 

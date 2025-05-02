@@ -4,7 +4,6 @@
 typedef unsigned colour_t;
 
 extern unsigned font_size;
-//~extern unsigned font_pad;
 extern unsigned font_width;
 extern unsigned font_height;
 extern unsigned font_indent;
