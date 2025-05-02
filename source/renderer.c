@@ -57,7 +57,7 @@ void render_create(unsigned width, unsigned height) {
     render_height = height;
 }
 
-void render_character(char character, unsigned x, unsigned y, signed * offx,
+void render_character(signed character, unsigned x, unsigned y, signed * offx,
                       signed * offy) {
     #define scaling (32)
 
@@ -117,11 +117,11 @@ signed import_ttf_font(const char * name) {
     // Check -1 error code or use size_t without giving a fuck?
     fseek(font_file, 0, SEEK_SET);
 
-    font_buffer = (unsigned char*)malloc(font_size_bytes);
+    font_buffer = malloc(font_size_bytes);
     fread(font_buffer, 1, font_size_bytes, font_file);
     fclose(font_file);
 
-    if (!stbtt_InitFont(&font, font_buffer, 0)) {
+    if (!stbtt_InitFont(&font, (unsigned char *)font_buffer, 0)) {
         fprintf(stderr, "ERROR: Failed to initialize font...\n");
         free(font_buffer);
         return 1;

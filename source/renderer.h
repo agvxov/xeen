@@ -15,7 +15,7 @@ extern colour_t render_colour;
 
 extern void render_create(unsigned width, unsigned height);
 
-extern void render_character(char character, unsigned x, unsigned y,
+extern void render_character(signed character, unsigned x, unsigned y,
                              signed * offx, signed * offy);
 
 extern colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
