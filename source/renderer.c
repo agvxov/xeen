@@ -13,7 +13,6 @@
 static unsigned * render_data   = NULL;
 static unsigned   render_width  = 0;
 static unsigned   render_height = 0;
-static colour_t   render_empty  = 0xff000000;
 
 static stbtt_fontinfo font = { 0 };
 
@@ -31,14 +30,31 @@ unsigned font_indent = 4;
 unsigned image_limit = 0;
 unsigned image_carry = 0;
 
-colour_t render_colour = 0xff000000;
+colour_t render_fg = 0xffffffff;
+colour_t render_bg = 0xff000000;
+colour_t render_no = 0xff000000;
+
+static unsigned channel_r (unsigned colour) { return ((colour >>  0) & 0xff); }
+static unsigned channel_g (unsigned colour) { return ((colour >>  8) & 0xff); }
+static unsigned channel_b (unsigned colour) { return ((colour >> 16) & 0xff); }
+static unsigned channel_a (unsigned colour) { return ((colour >> 24) & 0xff); }
 
 static colour_t get_colour(unsigned char alpha) {
-    colour_t r = (((render_colour >>  0) & 0xff) * alpha) / 255;
-    colour_t g = (((render_colour >>  8) & 0xff) * alpha) / 255;
-    colour_t b = (((render_colour >> 16) & 0xff) * alpha) / 255;
+    double scale = (double) alpha / 255.0;
 
-    return 0xff000000 | (b << 16) | (g << 8) | (r << 0);
+    if (scale <= 0.0) { return render_bg; }
+    if (scale >= 1.0) { return render_fg;  }
+
+    unsigned r = (unsigned) ((1.0 - scale) * channel_r (render_bg)
+                                  + scale  * channel_r (render_fg));
+    unsigned g = (unsigned) ((1.0 - scale) * channel_g (render_bg)
+                                  + scale  * channel_g (render_fg));
+    unsigned b = (unsigned) ((1.0 - scale) * channel_b (render_bg)
+                                  + scale  * channel_b (render_fg));
+    unsigned a = (unsigned) ((1.0 - scale) * channel_a (render_bg)
+                                  + scale  * channel_a (render_fg));
+
+    return ((r << 0) | (g << 8) | (b << 16) | (a << 24));
 }
 
 void render_create(unsigned width, unsigned height) {
@@ -49,7 +65,7 @@ void render_create(unsigned width, unsigned height) {
 
     for (unsigned y = 0; y < height; ++y) {
         for (unsigned x = 0; x < width; ++x) {
-            render_data[y * width + x] = render_empty;
+            render_data[y * width + x] = render_no;
         }
     }
 
@@ -57,41 +73,37 @@ void render_create(unsigned width, unsigned height) {
     render_height = height;
 }
 
-void render_character(signed character, unsigned x, unsigned y, signed * offx,
-                      signed * offy) {
-    #define scaling (32)
-
-    unsigned char pixels[scaling*scaling] = { 0 };
+signed render_character(signed c, unsigned x, unsigned y) {
+#define scaling (32)
+    unsigned char pixels[scaling * scaling] = { 0 };
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-    stbtt_GetCodepointHMetrics(&font, character, &advance, &lsb);
+    stbtt_GetCodepointHMetrics(&font, c, &advance, &lsb);
 
-    stbtt_GetCodepointBitmapBox(&font, character, font_scale, font_scale, &x0,
-                                &y0, &x1, &y1);
+    stbtt_GetCodepointBitmapBox(&font, c, font_scale, font_scale, &x0, &y0,
+                                &x1, &y1);
 
     signed off = roundf(lsb * font_scale) + (font_ascent + y0) * scaling;
 
     off = (off < 0) ? 0 : off;
 
-    *offx = x1 - x0;
-    *offy = y1 - y0;
-
     stbtt_MakeCodepointBitmap(&font, pixels + off, x1 - x0, y1 - y0, scaling,
-                              font_scale, font_scale, character);
+                              font_scale, font_scale, c);
 
-    for (int i = 0; i < scaling; ++i) {
-        for (int j = 0; j < scaling; ++j) {
+    for (int i = 0; i < font_height; ++i) {
+        for (int j = 0; j < font_width; ++j) {
             unsigned data = get_colour(pixels[i * scaling + j]);
-            if (render_data[(y + i) * render_width + (x + j)] == render_empty) {
+            if (render_data[(y + i) * render_width + (x + j)] == render_no) {
                 render_data[(y + i) * render_width + (x + j)] = data;
+            //~} else {
+                //~render_data[(y + i) * render_width + (x + j)] = 0;
             }
         }
     }
 
-    *offx = roundf(advance * font_scale);
-
-    #undef scaling
+    return roundf(advance * font_scale);
+#undef scaling
 }
 
 colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {

@@ -34,7 +34,7 @@ signed main(const int argc, const char * const argv[]) {
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
 
-    render_colour = default_color;
+    render_fg = default_color;
 
     import_ttf_font("terminus.ttf");
 

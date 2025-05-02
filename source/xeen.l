@@ -161,8 +161,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 x += font_width * (font_indent - x % font_indent);
             }
 .           {
-                int offx = 0, offy = 0;
-                render_character(yytext[0], x, y, &offx, &offy);
+                int offx = render_character(yytext[0], x, y);
                 x += offx;
                 image_carry += offx;
             }
@@ -170,10 +169,9 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 Rune r;
                 chartorune(&r, yytext);
 
-                printf("UTF: %s %04X\n", yytext, r);
+                //printf("UTF: %s %04X\n", yytext, r);//ANONANONANON
 
-                int offx = 0, offy = 0;
-                render_character(r, x, y, &offx, &offy);
+                int offx = render_character(r, x, y);
                 x += offx;
                 image_carry += offx;
             }
@@ -189,7 +187,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 <IN_CONTROL_SEQUENCE>{
                     /* --- SPECIAL ---- */
 0                   {
-                        render_colour = default_color;
+                        render_fg = default_color;
                         //render_background = default_background;
                     }
 1                   {
@@ -202,7 +200,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 3[0-7]              {
                         int value;
                         sscanf(yytext, "%d", &value);
-                        render_colour = colorscheme[value-30];
+                        render_fg = colorscheme[value-30];
                     }
 4[0-7]              {
                         int value;
@@ -213,7 +211,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 9[0-7]              {
                         int value;
                         sscanf(yytext, "%d", &value);
-                        render_colour = colorscheme[value-30];
+                        render_fg = colorscheme[value-30];
                     }
 10[0-7]             {
                         int value;
@@ -224,7 +222,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 38;5;{d}+           {
                         int value;
                         sscanf(yytext+(sizeof("38;5;")-1), "%d", &value);
-                        render_colour = colorscheme[value];
+                        render_fg = colorscheme[value];
                     }
 48;5;{d}+           {
                         int value;
@@ -235,7 +233,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 38;2;{d}*;{d}*;{d}* {
                         int r, g, b;
                         sscanf(yytext+(sizeof("38;2;")-1), "%d;%d;%d", &r, &g, &b);
-                        render_colour = rgb2colour_t(r, g, b);
+                        render_fg = rgb2colour_t(r, g, b);
                     }
 48;2;{d}*;{d}*;{d}* {
                         int r, g, b;
