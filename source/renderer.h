@@ -3,10 +3,18 @@
 
 typedef unsigned colour_t;
 
-extern unsigned font_size;
-extern unsigned font_width;
-extern unsigned font_height;
-extern unsigned font_indent;
+typedef enum {
+	font_normal,
+	font_bold,
+	font_italic,
+	font_bold_italic,
+	font_types
+} font_type;
+
+extern font_type font_style;
+extern unsigned  font_size;
+extern unsigned  font_width;
+extern unsigned  font_height;
 
 extern unsigned image_limit;
 extern unsigned image_carry;

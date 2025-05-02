@@ -14,18 +14,19 @@ static unsigned * render_data   = NULL;
 static unsigned   render_width  = 0;
 static unsigned   render_height = 0;
 
-static stbtt_fontinfo font = { 0 };
+static stbtt_fontinfo font[font_types] = { { 0 } };
 
-static float    font_scale    = 0;
-static signed   font_ascent   = 0;
-static signed   font_descent  = 0;
-static signed   font_line_gap = 0;
-static char   * font_buffer   = NULL;
+static signed   font_loaded[font_types]   = { 0 };
+static float    font_scale[font_types]    = { 0 };
+static signed   font_ascent[font_types]   = { 0 };
+static signed   font_descent[font_types]  = { 0 };
+static signed   font_line_gap[font_types] = { 0 };
+static char   * font_buffer[font_types]   = { NULL };
 
-unsigned font_size   = 24;
-unsigned font_width  = 0;
-unsigned font_height = 0;
-unsigned font_indent = 4;
+font_type font_style  = font_normal;
+unsigned  font_size   = 24;
+unsigned  font_width  = 0;
+unsigned  font_height = 0;
 
 unsigned image_limit = 0;
 unsigned image_carry = 0;
@@ -43,7 +44,7 @@ static colour_t get_colour(unsigned char alpha) {
     double scale = (double) alpha / 255.0;
 
     if (scale <= 0.0) { return render_bg; }
-    if (scale >= 1.0) { return render_fg;  }
+    if (scale >= 1.0) { return render_fg; }
 
     unsigned r = (unsigned) ((1.0 - scale) * channel_r (render_bg)
                                   + scale  * channel_r (render_fg));
@@ -79,17 +80,17 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-    stbtt_GetCodepointHMetrics(&font, c, &advance, &lsb);
+    stbtt_GetCodepointHMetrics(&font[font_style], c, &advance, &lsb);
 
-    stbtt_GetCodepointBitmapBox(&font, c, font_scale, font_scale, &x0, &y0,
+    stbtt_GetCodepointBitmapBox(&font[font_style], c, font_scale[font_style], font_scale[font_style], &x0, &y0,
                                 &x1, &y1);
 
-    signed off = roundf(lsb * font_scale) + (font_ascent + y0) * scaling;
+    signed off = roundf(lsb * font_scale[font_style]) + (font_ascent[font_style] + y0) * scaling;
 
     off = (off < 0) ? 0 : off;
 
-    stbtt_MakeCodepointBitmap(&font, pixels + off, x1 - x0, y1 - y0, scaling,
-                              font_scale, font_scale, c);
+    stbtt_MakeCodepointBitmap(&font[font_style], pixels + off, x1 - x0, y1 - y0, scaling,
+                              font_scale[font_style], font_scale[font_style], c);
 
     for (int i = 0; i < font_height; ++i) {
         for (int j = 0; j < font_width; ++j) {
@@ -102,7 +103,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
         }
     }
 
-    return roundf(advance * font_scale);
+    return roundf(advance * font_scale[font_style]);
 #undef scaling
 }
 
@@ -115,41 +116,43 @@ colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
 signed import_ttf_font(const char * name) {
     FILE * font_file = fopen(name, "rb");
 
+    if (font_loaded[font_style]) {
+        fprintf(stderr, "ERROR: You already loaded this font style...\n");
+        return 1;
+    }
+
     if (!font_file) {
-        // We need good error messages here...
-        // Should we abort the program, or use fallback font?
         fprintf(stderr, "ERROR: Failed to open font file...\n");
         return 1;
     }
 
     fseek(font_file, 0, SEEK_END);
     long font_size_bytes = ftell(font_file);
-    // Check -1 error code or use size_t without giving a fuck?
     fseek(font_file, 0, SEEK_SET);
 
-    font_buffer = malloc(font_size_bytes);
-    fread(font_buffer, 1, font_size_bytes, font_file);
+    font_buffer[font_style] = malloc(font_size_bytes);
+    fread(font_buffer[font_style], 1, font_size_bytes, font_file);
     fclose(font_file);
 
-    if (!stbtt_InitFont(&font, (unsigned char *)font_buffer, 0)) {
+    if (!stbtt_InitFont(&font[font_style], (unsigned char *)font_buffer[font_style], 0)) {
         fprintf(stderr, "ERROR: Failed to initialize font...\n");
-        free(font_buffer);
+        free(font_buffer[font_style]);
         return 1;
     }
 
-    font_scale = stbtt_ScaleForPixelHeight(&font, font_size);
+    font_scale[font_style] = stbtt_ScaleForPixelHeight(&font[font_style], font_size);
 
-    stbtt_GetFontVMetrics(&font, &font_ascent, &font_descent, &font_line_gap);
+    stbtt_GetFontVMetrics(&font[font_style], &font_ascent[font_style], &font_descent[font_style], &font_line_gap[font_style]);
 
-    font_ascent = roundf(font_ascent * font_scale);
-    font_descent = roundf(font_descent * font_scale);
+    font_ascent[font_style]  = roundf(font_ascent[font_style] * font_scale[font_style]);
+    font_descent[font_style] = roundf(font_descent[font_style] * font_scale[font_style]);
 
-    for (signed index = 32; index <= font.numGlyphs; index++) {
+    for (signed index = 32; index <= font[font_style].numGlyphs; index++) {
         signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-        stbtt_GetCodepointHMetrics(&font, index, &advance, &lsb);
+        stbtt_GetCodepointHMetrics(&font[font_style], index, &advance, &lsb);
 
-        stbtt_GetCodepointBitmapBox(&font, index, font_scale, font_scale, &x0,
+        stbtt_GetCodepointBitmapBox(&font[font_style], index, font_scale[font_style], font_scale[font_style], &x0,
                                     &y0, &x1, &y1);
 
         signed width  = x1 - x0;
@@ -163,10 +166,9 @@ signed import_ttf_font(const char * name) {
         }
     }
 
+    font_loaded[font_style] = !font_loaded[font_style];
+
     return 0;
-    // I'm not cleaning anything yet, this leaks memory.
-    // Once we see shit works, we can sanitize it.
-    // Please don't remove this comment until stuff renders.
 }
 
 signed export_png_image(const char * name) {
@@ -187,7 +189,12 @@ signed export_png_image(const char * name) {
     stbi_write_png(name, image_limit, render_height, 4, buffer,
                    image_limit * 4);
 
-    free(font_buffer);
+    for (signed index = 0; index < font_types; ++index) {
+        if (font_loaded[index]) {
+            free(font_buffer[index]);
+        }
+    }
+
     free(render_data);
     free(buffer);
 

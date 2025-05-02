@@ -1,6 +1,7 @@
 %{
     #include <stdlib.h>
     #include "renderer.h"
+    #include "opts.h"
     #include "colorscheme.h"
 
     static char * input_str;
@@ -158,7 +159,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 BEGIN IN_CONTROL_SEQUENCE;
             }
 \t          {
-                x += font_width * (font_indent - x % font_indent);
+                x += font_width * (tab_width - x % tab_width);
             }
 .           {
                 int offx = render_character(yytext[0], x, y);
