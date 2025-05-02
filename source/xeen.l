@@ -32,16 +32,21 @@ d       [[:digit:]]
             BEGIN IN_CONTROL_SEQUENCE;
         }
 \t      {
-            x += font_width * font_indent;
+            x += font_width * (font_indent - x % font_indent);
         }
 .       {
             int offx = 0, offy = 0;
             render_character(yytext[0], x, y, &offx, &offy);
             x += offx;
+            image_carry += offx;
         }
 \n      {
             x *= 0;
             y += font_height;
+            image_limit = (image_carry > image_limit)
+                        ? image_carry
+                        : image_limit;
+            image_carry = 0;
         }
 
 <IN_CONTROL_SEQUENCE>{

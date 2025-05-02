@@ -22,10 +22,13 @@ static signed font_ascent   = 0;
 static signed font_descent  = 0;
 static signed font_line_gap = 0;
 
-unsigned font_size   = 18;
+unsigned font_size   = 24;
 unsigned font_width  = 0;
 unsigned font_height = 0;
 unsigned font_indent = 4;
+
+unsigned image_limit = 0;
+unsigned image_carry = 0;
 
 colour_t render_colour = 0xff000000;
 
@@ -51,10 +54,6 @@ void render_create(unsigned width, unsigned height) {
 
     render_width  = width;
     render_height = height;
-}
-
-void render_delete(void) {
-    free(render_data);
 }
 
 void render_character(char character, unsigned x, unsigned y, signed * offx,
@@ -145,13 +144,15 @@ signed import_ttf_font(const char * name) {
         signed width  = x1 - x0;
         signed height = y1 - y0;
 
-        if (width  > font_width) {
+        if (width  > (signed) font_width) {
             font_width = width;
         }
-        if (height > font_height) {
+        if (height > (signed) font_height) {
             font_height = height;
         }
     }
+
+    free(font_buffer);
 
     return 0;
     // I'm not cleaning anything yet, this leaks memory.
@@ -166,8 +167,19 @@ signed export_png_image(const char * name) {
         return 1;
     }
 
-    stbi_write_png(name, render_width, render_height, 4, render_data,
-                   render_width * 4);
+    unsigned * buffer = malloc(image_limit * render_height * sizeof(*buffer));
+
+    for (unsigned y = 0; y < render_height; ++y) {
+        for (unsigned x = 0; x < image_limit; ++x) {
+            buffer[y * image_limit + x] = render_data[y * render_width + x];
+        }
+    }
+
+    stbi_write_png(name, image_limit, render_height, 4, buffer,
+                   image_limit * 4);
+
+    free(render_data);
+    free(buffer);
 
     return 0;
 }

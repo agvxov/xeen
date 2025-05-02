@@ -36,15 +36,13 @@ signed main(const int argc, const char * const argv[]) {
 
     render_colour = default_color;
 
-    import_ttf_font("terminus.ttf");
+    import_ttf_font("cmu.ttf");
 
     render_create(w, h);
 
     xeen(input, input_len);
 
     export_png_image(output_filename);
-
-    render_delete();
 
     sdsfree(input);
 

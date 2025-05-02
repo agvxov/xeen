@@ -43,7 +43,7 @@ void parse_args(const int argc, const char * const * const argv) {
                 }
             } break;
             case 's': {
-                int e = sscanf(optarg, "%d", &font_size);
+                int e = sscanf(optarg, "%u", &font_size);
                 if (!e) {
                     fprintf(stderr, "Invalid font size '%s'.\n", optarg);
                     exit(1);

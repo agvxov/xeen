@@ -8,10 +8,12 @@ extern unsigned font_width;
 extern unsigned font_height;
 extern unsigned font_indent;
 
+extern unsigned image_limit;
+extern unsigned image_carry;
+
 extern colour_t render_colour;
 
 extern void render_create(unsigned width, unsigned height);
-extern void render_delete(void);
 
 extern void render_character(char character, unsigned x, unsigned y,
                              signed * offx, signed * offy);
