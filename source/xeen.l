@@ -60,37 +60,55 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 
 <IN_CONTROL_SEQUENCE>{
                     /* --- SPECIAL ---- */
-0                   {
-                        render_fg = default_color;
-                        //render_background = default_background;
+0                   { // reset
+                        render_fg  = default_color;
+                        render_bg  = default_background;
+                        font_style = font_normal;
                     }
-1                   {
-                        // bold
+1                   { // bold
+                        switch (font_style) {
+                            case font_bold_italic:
+                            case font_italic: font_style = font_bold_italic; break;
+                            default:          font_style = font_bold;        break;
+                        }
                     }
-2                   {
-                        // faint (probably mess with the oppacity)
+2                   { // faint
+                        // XXX (probably mess with the oppacity)
+                    }
+3                   { // italic
+                        switch (font_style) {
+                            case font_bold_italic:
+                            case font_bold: font_style = font_bold_italic; break;
+                            default:        font_style = font_italic;      break;
+                        }
+                    }
+7                   { // reversed
+                        colour_t swap;
+                        swap = render_fg;
+                        render_fg = render_bg;
+                        render_bg = swap;
                     }
                     /* --- 4 BIT COLORS --- */
-3[0-7]              {
+3[0-7]              { // foreground
                         int value;
                         sscanf(yytext, "%d", &value);
                         render_fg = colorscheme[value-30];
                     }
-4[0-7]              {
+4[0-7]              { // background
                         int value;
                         sscanf(yytext, "%d", &value);
-                        //render_background = colorscheme[value-30];
+                        //render_bg = colorscheme[value-40];
                     }
-                        /* NOTE: the below should bright variants, but im color blind */
-9[0-7]              {
+9[0-7]              { // bright
+                        // XXX: im color blind i dont know how to implement this
                         int value;
                         sscanf(yytext, "%d", &value);
                         render_fg = colorscheme[value-30];
                     }
-10[0-7]             {
+10[0-7]             { // bright background
                         int value;
                         sscanf(yytext, "%d", &value);
-                        //render_background = colorscheme[value-30];
+                        render_bg = colorscheme[value-40];
                     }
                     /* --- 8 BIT COLORS --- */
 38;5;{d}+           {
@@ -101,7 +119,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 48;5;{d}+           {
                         int value;
                         sscanf(yytext+(sizeof("48;5;")-1), "%d", &value);
-                        //render_background = colorscheme[value];
+                        render_bg = colorscheme[value];
                     }
                     /* --- 24 BIT COLOR --- */
 38;2;{d}*;{d}*;{d}* {
@@ -112,16 +130,18 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
 48;2;{d}*;{d}*;{d}* {
                         int r, g, b;
                         sscanf(yytext+(sizeof("48;2;")-1), "%d;%d;%d", &r, &g, &b);
-                        //render_background = rgb2colour_t(r, g, b);
+                        render_bg = rgb2colour_t(r, g, b);
                     }
                     /* --- TERMINATORS --- */
 ;                   { ; }
 m                   {
                         BEGIN INITIAL;
                     }
-.|\n                {
+{d}+                {
                         fputs("Unknown escape sequence encountered.\n", stderr);
-                        return 0;
+                    }
+.|\n                {
+                        fputs("Errorous escape encountered.\n", stderr);
                     }
 }
 %%
