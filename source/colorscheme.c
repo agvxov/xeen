@@ -3,8 +3,9 @@
 const colour_t default_color      = 0xffffffff;
 const colour_t default_background = 0xff000000;
 
+#include <math.h>
 static
-colour_t factor_colour(colour_t colour, float factor) {
+colour_t factor_colour(colour_t c, float factor) {
     unsigned char r = (c >> 16) & 0xff;
     unsigned char g = (c >>  8) & 0xff;
     unsigned char b = (c >>  0) & 0xff;

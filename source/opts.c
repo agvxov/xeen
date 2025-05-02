@@ -1,5 +1,4 @@
 #include "opts.h"
-#include "renderer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +13,7 @@ void usage(void) {
         "\t-o <file> : specify output\n"
         "\t-t <n>    : set tab width\n"
         "\t-s <n>    : set font size\n"
+        "\t-f <file> : set font\n"
     );
 }
 
@@ -22,7 +22,7 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:")) != -1) {
+    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:f:")) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
@@ -45,11 +45,14 @@ void parse_args(const int argc, const char * const * const argv) {
                 }
             } break;
             case 's': {
-                int e = sscanf(optarg, "%u", &font_size);
+                int e = sscanf(optarg, "%d", &font_size_opt);
                 if (!e) {
                     fprintf(stderr, "Invalid font size '%s'.\n", optarg);
                     exit(1);
                 }
+            } break;
+            case 'f': {
+                font_filename = optarg;
             } break;
             case '?': {
                 fprintf(stderr, "Unknown argument '-%c'.\n", optopt);

@@ -8,6 +8,8 @@ extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
 char * output_filename = "xeen.png";
+char * font_filename   = "resource/terminus.ttf";
+int font_size_opt = 24;
 int tab_width = 8;
 
 #define READ_BATCH_SIZE 64
@@ -28,20 +30,18 @@ sds stdin2str(void) {
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
-    sds input = stdin2str();
+    sds input        = stdin2str();
     size_t input_len = sdslen(input);
 
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
-
     render_fg = default_color;
-
-    import_ttf_font("terminus.ttf");
+    render_bg = default_background;
+    font_size = font_size_opt;
+    import_ttf_font(font_filename);
 
     render_create(w, h);
-
     xeen(input, input_len);
-
     export_png_image(output_filename);
 
     sdsfree(input);
