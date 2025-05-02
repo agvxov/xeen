@@ -1,6 +1,7 @@
 #include "colorscheme.h"
 
-colour_t default_color = 0xffffffff;
+const colour_t default_color      = 0xffffffff;
+const colour_t default_background = 0xff000000;
 
 colour_t colorscheme[256] = {
     [0]   = 0xff000000,
