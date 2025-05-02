@@ -61,8 +61,6 @@ void render_character(signed character, unsigned x, unsigned y, signed * offx,
                       signed * offy) {
     #define scaling (32)
 
-    if ((character < 32) || (character > font.numGlyphs)) return;
-
     unsigned char pixels[scaling*scaling] = { 0 };
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
