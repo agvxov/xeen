@@ -173,7 +173,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 printf("UTF: %s %04X\n", yytext, r);
 
                 int offx = 0, offy = 0;
-                render_character(0x2500, x, y, &offx, &offy);
+                render_character(r, x, y, &offx, &offy);
                 x += offx;
                 image_carry += offx;
             }
