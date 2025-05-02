@@ -23,13 +23,20 @@
         line_width = 0;
     }
 %}
+
 escape_sequence \033\[[0-9;]+m
+utfdatabyte     [\x80-\xBF]
+utf2byte        [\xC0-\xDF]{utfdatabyte}
+utf3byte        [\xE0-\xEF]{utfdatabyte}{utfdatabyte}
+utf4byte        [\xF0-\xFF]{utfdatabyte}{utfdatabyte}{utfdatabyte}
+utfchar         {utf2byte}|{utf3byte}|{utf4byte}
+
 %option noyywrap nodefault
 %option nounput
 %option yylineno
 %%
 {escape_sequence}   { ; }
-.                   {
+.|{utfchar}         {
                         ++line_width;
                     }
 \t                  {
