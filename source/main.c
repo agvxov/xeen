@@ -36,7 +36,7 @@ signed main(const int argc, const char * const argv[]) {
 
     render_colour = default_color;
 
-    import_ttf_font("cmu.ttf");
+    import_ttf_font("terminus.ttf");
 
     render_create(w, h);
 

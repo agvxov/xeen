@@ -17,10 +17,11 @@ static colour_t   render_empty  = 0xff000000;
 
 static stbtt_fontinfo font = { 0 };
 
-static float  font_scale    = 0;
-static signed font_ascent   = 0;
-static signed font_descent  = 0;
-static signed font_line_gap = 0;
+static float    font_scale    = 0;
+static signed   font_ascent   = 0;
+static signed   font_descent  = 0;
+static signed   font_line_gap = 0;
+static char   * font_buffer   = NULL;
 
 unsigned font_size   = 24;
 unsigned font_width  = 0;
@@ -116,7 +117,7 @@ signed import_ttf_font(const char * name) {
     // Check -1 error code or use size_t without giving a fuck?
     fseek(font_file, 0, SEEK_SET);
 
-    unsigned char* font_buffer = (unsigned char*)malloc(font_size_bytes);
+    font_buffer = (unsigned char*)malloc(font_size_bytes);
     fread(font_buffer, 1, font_size_bytes, font_file);
     fclose(font_file);
 
@@ -152,8 +153,6 @@ signed import_ttf_font(const char * name) {
         }
     }
 
-    free(font_buffer);
-
     return 0;
     // I'm not cleaning anything yet, this leaks memory.
     // Once we see shit works, we can sanitize it.
@@ -178,6 +177,7 @@ signed export_png_image(const char * name) {
     stbi_write_png(name, image_limit, render_height, 4, buffer,
                    image_limit * 4);
 
+    free(font_buffer);
     free(render_data);
     free(buffer);
 
