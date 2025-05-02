@@ -8,10 +8,12 @@
 static
 void usage(void) {
     puts(
-        "??? [options]\n"
-        "\t-v        : print version and exit\n"
+        "xeen [options]\n"
         "\t-h        : print help and exit\n"
-        "\t-o <file> : specify output"
+        "\t-v        : print version and exit\n"
+        "\t-o <file> : specify output\n"
+        "\t-t <n>    : set tab width\n"
+        "\t-s <n>    : set font size\n"
     );
 }
 
