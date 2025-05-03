@@ -34,7 +34,7 @@ char * stdin2str(size_t * len) {
         memcpy(r + r_len, buffer, read_count);
         r_len += read_count;
     } while (read_count == READ_BATCH_SIZE);
-    realloc(r, r_len + 1);
+    r = realloc(r, r_len + 1);
     r[r_len] = '\0';
 
     *len = r_len;
