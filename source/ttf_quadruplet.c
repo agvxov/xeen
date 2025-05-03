@@ -7,6 +7,13 @@
 #include <fts.h>
 #include <alloca.h>
 
+enum {
+    TTF_NORMAL     = 0b00,
+    TTF_BOLD       = 0b01,
+    TTF_ITALIC     = 0b10,
+    TTF_BOLDITALIC = 0b11,
+};
+
 static inline
 int ttf_style(const char * name) {
     int r = TTF_NORMAL;

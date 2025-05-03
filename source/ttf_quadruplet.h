@@ -1,13 +1,6 @@
 #ifndef TTF_QUADRUPLET_H
 #define TTF_QUADRUPLET_H
 
-enum {
-    TTF_NORMAL     = 0b00,
-    TTF_BOLD       = 0b01,
-    TTF_ITALIC     = 0b10,
-    TTF_BOLDITALIC = 0b11,
-};
-
 typedef struct {
     char * normal;
     char * bold;
