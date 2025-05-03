@@ -7,10 +7,11 @@
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
+char * font_filename   = "resource/terminus";
 char * output_filename = "xeen.png";
-char * font_filename   = "resource/terminus.ttf";
+
 int font_size_opt = 24;
-int tab_width = 8;
+int tab_width     =  8;
 
 #define READ_BATCH_SIZE 64
 
@@ -38,11 +39,28 @@ signed main(const int argc, const char * const argv[]) {
     render_fg = default_color;
     render_bg = default_background;
     font_size = font_size_opt;
-    import_ttf_font(font_filename);
+
+    for (font_type i = 0; i < font_types; ++i) {
+        const char * font_name[font_types] = {
+            "normal",
+            "bold",
+            "italic",
+            "bold_italic",
+        };
+        char buf[0x666] = "";
+        snprintf(buf, 0x666, "%s/%s.ttf", font_filename, font_name[i]);
+        font_style = i;
+        if (import_ttf_font(buf)) {
+            return 1;
+        }
+    }
 
     render_create(w, h);
     xeen(input, input_len);
-    export_png_image(output_filename);
+
+    if (export_png_image(output_filename)) {
+        return 1;
+    }
 
     sdsfree(input);
 

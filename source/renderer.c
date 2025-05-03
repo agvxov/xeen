@@ -80,25 +80,29 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
+    if (!font_loaded[font_style]) {
+        font_style = font_normal;
+    }
+
     stbtt_GetCodepointHMetrics(&font[font_style], c, &advance, &lsb);
 
-    stbtt_GetCodepointBitmapBox(&font[font_style], c, font_scale[font_style], font_scale[font_style], &x0, &y0,
-                                &x1, &y1);
+    stbtt_GetCodepointBitmapBox(&font[font_style], c, font_scale[font_style],
+                                font_scale[font_style], &x0, &y0, &x1, &y1);
 
-    signed off = roundf(lsb * font_scale[font_style]) + (font_ascent[font_style] + y0) * scaling;
+    signed off = roundf(lsb * font_scale[font_style]) + scaling
+               * (font_ascent[font_style] + y0);
 
     off = (off < 0) ? 0 : off;
 
-    stbtt_MakeCodepointBitmap(&font[font_style], pixels + off, x1 - x0, y1 - y0, scaling,
-                              font_scale[font_style], font_scale[font_style], c);
+    stbtt_MakeCodepointBitmap(&font[font_style], pixels + off, x1 - x0,
+                              y1 - y0, scaling, font_scale[font_style],
+                              font_scale[font_style], c);
 
-    for (int i = 0; i < font_height; ++i) {
-        for (int j = 0; j < font_width; ++j) {
+    for (unsigned i = 0; i < font_height; ++i) {
+        for (unsigned j = 0; j < font_width; ++j) {
             unsigned data = get_colour(pixels[i * scaling + j]);
             if (render_data[(y + i) * render_width + (x + j)] == render_no) {
                 render_data[(y + i) * render_width + (x + j)] = data;
-            //~} else {
-                //~render_data[(y + i) * render_width + (x + j)] = 0;
             }
         }
     }
