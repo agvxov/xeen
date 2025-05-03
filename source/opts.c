@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 
 static
 void usage(void) {
@@ -14,6 +15,7 @@ void usage(void) {
         "\t-t <n>    : set tab width\n"
         "\t-s <n>    : set font size\n"
         "\t-f <file> : set font\n"
+        "\t-F <file> : set font directory\n"
     );
 }
 
@@ -22,7 +24,7 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:f:")) != -1) {
+    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:f:F:")) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
@@ -52,7 +54,10 @@ void parse_args(const int argc, const char * const * const argv) {
                 }
             } break;
             case 'f': {
-                font_filename = optarg;
+                font_name = strdup(optarg);
+            } break;
+            case 'F': {
+                font_directory = strdup(optarg);
             } break;
             case '?': {
                 fprintf(stderr, "Unknown argument '-%c'.\n", optopt);

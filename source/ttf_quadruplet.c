@@ -30,7 +30,7 @@ ttf_quadruplet_t load_font(char * fonts_path, const char * target_name) {
     ttf_quadruplet_t r = (ttf_quadruplet_t){0};
 
     if (fonts_path == NULL) {
-        fonts_path = strdup("/usr/share/fonts/TTF");
+        fonts_path = strdup("/usr/share/fonts");
     }
 
     char * paths[] = {strdup(fonts_path), NULL};
