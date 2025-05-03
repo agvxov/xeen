@@ -1,5 +1,12 @@
 #include "ttf_quadruplet.h"
 
+#include <unistd.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <fts.h>
+#include <alloca.h>
+
 static inline
 int ttf_style(const char * name) {
     int r = TTF_NORMAL;
@@ -33,8 +40,6 @@ ttf_quadruplet_t load_font(const char * target_name) {
         for (int i = 0; base[i] != '\0'; i++) {
             lower_name[i] = tolower(base[i]);
         }
-
-        nftw
 
         if (!strstr(lower_name, target_name)) {
             continue;
