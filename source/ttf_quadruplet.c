@@ -26,14 +26,10 @@ int ttf_style(const char * name) {
     return r;
 }
 
-ttf_quadruplet_t load_font(char * fonts_path, const char * target_name) {
+ttf_quadruplet_t load_font_paths(const char * root_font_path, const char * target_name) {
     ttf_quadruplet_t r = (ttf_quadruplet_t){0};
 
-    if (fonts_path == NULL) {
-        fonts_path = strdup("/usr/share/fonts");
-    }
-
-    char * paths[] = {strdup(fonts_path), NULL};
+    char * paths[] = {strdup(root_font_path), NULL};
     FTS *tree = fts_open(paths, FTS_PHYSICAL | FTS_NOCHDIR, NULL);
     if (!tree) { goto end; }
 
@@ -60,10 +56,10 @@ ttf_quadruplet_t load_font(char * fonts_path, const char * target_name) {
         int style = ttf_style(lower_name);
         const char * fullpath = entry->fts_path;
         switch (style) {
-            case TTF_NORMAL:     r.normal     = strdup(fullpath); break;
-            case TTF_BOLD:       r.bold       = strdup(fullpath); break;
-            case TTF_ITALIC:     r.italic     = strdup(fullpath); break;
-            case TTF_BOLDITALIC: r.bolditalic = strdup(fullpath); break;
+            case TTF_NORMAL:     r.normal      = strdup(fullpath); break;
+            case TTF_BOLD:       r.bold        = strdup(fullpath); break;
+            case TTF_ITALIC:     r.italic      = strdup(fullpath); break;
+            case TTF_BOLDITALIC: r.bold_italic = strdup(fullpath); break;
         }
 
         if (is_quadruplet_full(r)) { break; }
@@ -72,5 +68,6 @@ ttf_quadruplet_t load_font(char * fonts_path, const char * target_name) {
     fts_close(tree);
 
   end:
+    free(paths[0]);
     return r;
 }

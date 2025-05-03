@@ -54,7 +54,7 @@ signed main(const int argc, const char * const argv[]) {
     render_bg = default_background;
     font_size = font_size_opt;
 
-    ttf_quadruplet_t fonts = load_font(font_directory, font_name);
+    ttf_quadruplet_t fonts = load_font_paths(font_directory, font_name);
 
     if (!is_quadruplet_full(fonts)) {
         error("Failed to load font '%s' from '%s'.", font_name, font_directory);

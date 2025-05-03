@@ -5,7 +5,7 @@ typedef struct {
     char * normal;
     char * bold;
     char * italic;
-    char * bolditalic;
+    char * bold_italic;
 } ttf_quadruplet_t;
 
 static inline
@@ -13,10 +13,10 @@ bool is_quadruplet_full(ttf_quadruplet_t q) {
     return q.normal
         && q.bold
         && q.italic
-        && q.bolditalic
+        && q.bold_italic
     ;
 }
 
-extern ttf_quadruplet_t load_font(char * fonts_path, const char * target_name);
+extern ttf_quadruplet_t load_font_paths(const char * root_font_path, const char * target_name);
 
 #endif
