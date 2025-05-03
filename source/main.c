@@ -55,6 +55,8 @@ signed main(const int argc, const char * const argv[]) {
         }
     }
 
+    font_style = font_normal;
+
     render_defaults(w, h);
     xeen(input, input_len);
 
