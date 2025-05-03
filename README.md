@@ -20,9 +20,15 @@ instead it assumes its input was intelligently formatted.
 
 To highlight code, we recommend:
 + [xighlight]()
-+ [bat]()
++ [bat](https://github.com/sharkdp/bat)
 
 ## CLI
 ```
-    // XXX: FILL IN WHEN DONE
+xeen [options]
+  -h        : print help and exit
+  -v        : print version and exit
+  -o <file> : specify output
+  -t <n>    : set tab width
+  -s <n>    : set font size
+  -f <file> : set font
 ```
