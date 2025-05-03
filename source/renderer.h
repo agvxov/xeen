@@ -13,28 +13,19 @@ typedef enum {
 
 extern font_type font_style;
 extern unsigned  font_size;
-// NOTE FROM ANON: do these have to be public?
 extern unsigned  font_width;
 extern unsigned  font_height;
 
 extern unsigned image_limit;
 extern unsigned image_carry;
-// ---
 
 extern colour_t render_fg;
 extern colour_t render_bg;
-extern colour_t render_no; // Whats this?
+extern colour_t render_no;
 
-extern void render_create(unsigned width, unsigned height);
-// ^i assume you do no allocations if there is no destroy function,
-//   but please provide one regardless even if its a nop
-//  im not trying to preach about good practices or something,
-//   it just hurts my ocd to not have one
+extern void render_defaults(unsigned width, unsigned height);
 
 extern signed render_character(signed c, unsigned x, unsigned y);
-
-extern colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue);
-// ^ i snuk this in a while ago, should i move it to colourscheme?
 
 extern signed import_ttf_font(const char * name);
 extern signed export_png_image(const char * name);

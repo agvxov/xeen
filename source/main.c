@@ -55,7 +55,7 @@ signed main(const int argc, const char * const argv[]) {
         }
     }
 
-    render_create(w, h);
+    render_defaults(w, h);
     xeen(input, input_len);
 
     if (export_png_image(output_filename)) {

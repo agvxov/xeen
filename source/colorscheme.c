@@ -283,3 +283,9 @@ colour_t colorscheme[256] = {
     [254] = 0xffe4e4e4,
     [255] = 0xffeeeeee,
 };
+
+colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
+    colour_t r;
+    r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
+    return r;
+}

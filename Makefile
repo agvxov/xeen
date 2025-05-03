@@ -28,7 +28,7 @@ ifeq (${DEBUG}, 1)
   CPPFLAGS += -DDEBUG
   CFLAGS.D += -Wall -Wextra -Wpedantic
   CFLAGS.D += -O0 -ggdb -fno-inline
-#~  CFLAGS.D += -fsanitize=address,undefined
+  CFLAGS.D += -fsanitize=address,undefined
   CFLAGS   += ${CFLAGS.D}
   CXXFLAGS += ${CFLAGS.D}
 else

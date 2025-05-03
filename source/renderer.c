@@ -58,7 +58,7 @@ static colour_t get_colour(unsigned char alpha) {
     return ((r << 0) | (g << 8) | (b << 16) | (a << 24));
 }
 
-void render_create(unsigned width, unsigned height) {
+void render_defaults(unsigned width, unsigned height) {
     width  *= font_width;
     height *= font_height;
 
@@ -111,12 +111,6 @@ signed render_character(signed c, unsigned x, unsigned y) {
 #undef scaling
 }
 
-colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
-    colour_t r;
-    r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
-    return r;
-}
-
 signed import_ttf_font(const char * name) {
     FILE * font_file = fopen(name, "rb");
 
@@ -138,26 +132,37 @@ signed import_ttf_font(const char * name) {
     fread(font_buffer[font_style], 1, font_size_bytes, font_file);
     fclose(font_file);
 
-    if (!stbtt_InitFont(&font[font_style], (unsigned char *)font_buffer[font_style], 0)) {
+    if (!stbtt_InitFont(&font[font_style],
+                        (unsigned char *)font_buffer[font_style],
+                        0)) {
         fprintf(stderr, "ERROR: Failed to initialize font...\n");
         free(font_buffer[font_style]);
         return 1;
     }
 
-    font_scale[font_style] = stbtt_ScaleForPixelHeight(&font[font_style], font_size);
+    font_scale[font_style] = stbtt_ScaleForPixelHeight(&font[font_style],
+                                                       font_size);
 
-    stbtt_GetFontVMetrics(&font[font_style], &font_ascent[font_style], &font_descent[font_style], &font_line_gap[font_style]);
+    stbtt_GetFontVMetrics(&font[font_style],
+                          &font_ascent[font_style],
+                          &font_descent[font_style],
+                          &font_line_gap[font_style]);
 
-    font_ascent[font_style]  = roundf(font_ascent[font_style] * font_scale[font_style]);
-    font_descent[font_style] = roundf(font_descent[font_style] * font_scale[font_style]);
+    font_ascent[font_style] = roundf(font_ascent[font_style]
+                                     * font_scale[font_style]);
+
+    font_descent[font_style] = roundf(font_descent[font_style]
+                                      * font_scale[font_style]);
 
     for (signed index = 32; index <= font[font_style].numGlyphs; index++) {
         signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
         stbtt_GetCodepointHMetrics(&font[font_style], index, &advance, &lsb);
 
-        stbtt_GetCodepointBitmapBox(&font[font_style], index, font_scale[font_style], font_scale[font_style], &x0,
-                                    &y0, &x1, &y1);
+        stbtt_GetCodepointBitmapBox(&font[font_style], index,
+                                    font_scale[font_style],
+                                    font_scale[font_style],
+                                    &x0, &y0, &x1, &y1);
 
         signed width  = x1 - x0;
         signed height = y1 - y0;
@@ -177,7 +182,6 @@ signed import_ttf_font(const char * name) {
 
 signed export_png_image(const char * name) {
     if (name == NULL) {
-        // Write proper error message?
         fprintf (stderr, "ERROR: Name is null...\n");
         return 1;
     }
