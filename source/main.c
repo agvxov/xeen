@@ -43,6 +43,10 @@ char * stdin2str(size_t * len) {
 }
 
 signed main(const int argc, const char * const argv[]) {
+  #define CHECKED_LOAD(x) do {     \
+    font_style = font_ ## x;       \
+    import_ttf_font(fonts. x);  \
+  } while (0)
     parse_args(argc, argv);
 
     size_t input_len;
@@ -61,10 +65,10 @@ signed main(const int argc, const char * const argv[]) {
         return 1;
     }
 
-    font_style = font_normal;      import_ttf_font(fonts.normal);
-    font_style = font_bold;        import_ttf_font(fonts.bold);
-    font_style = font_italic;      import_ttf_font(fonts.italic);
-    font_style = font_bold_italic; import_ttf_font(fonts.bolditalic);
+    CHECKED_LOAD(normal);
+    CHECKED_LOAD(bold);
+    CHECKED_LOAD(italic);
+    CHECKED_LOAD(bold_italic);
     font_style = font_normal;
 
     render_defaults(w, h);
@@ -81,4 +85,5 @@ signed main(const int argc, const char * const argv[]) {
     free(input);
 
     return 0;
+  #undef CHECKED_LOAD
 }
