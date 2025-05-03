@@ -23,8 +23,9 @@ static signed   font_descent[font_types]  = { 0 };
 static signed   font_line_gap[font_types] = { 0 };
 static char   * font_buffer[font_types]   = { NULL };
 
-font_type font_style = font_normal;
-unsigned  font_size  = 24;
+font_type font_style  = font_normal;
+unsigned  font_size   = 24;
+unsigned  font_indent = 0;
 
 unsigned font_width[font_types]  = { 0 };
 unsigned font_height[font_types] = { 0 };
@@ -77,7 +78,7 @@ void render_defaults(unsigned width, unsigned height) {
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
-#define scaling (32)
+#define scaling (36)
     unsigned char pixels[scaling * scaling] = { 0 };
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
@@ -100,16 +101,25 @@ signed render_character(signed c, unsigned x, unsigned y) {
                               y1 - y0, scaling, font_scale[font_style],
                               font_scale[font_style], c);
 
-    font_width[font_style] = x1 - x0 + off % scaling;
+    //~stbi_write_png("lnao.png", scaling, scaling, 1, pixels,
+                   //~image_limit);
+                   //~exit(1);
 
+    //~for (unsigned i = 0; i < y1 - y0 + off / scaling; ++i) {
+        //~for (unsigned j = 0; j < x1 - x0 + off % scaling; ++j) {
     for (unsigned i = 0; i < font_height[font_style]; ++i) {
         for (unsigned j = 0; j < font_width[font_style]; ++j) {
-            unsigned data = get_colour(pixels[i * scaling + j]);
+    //~for (unsigned i = y0; i < scaling; ++i) {
+        //~for (unsigned j = x0; j < scaling; ++j) {
+            colour_t data = get_colour(pixels[i * scaling + j]);
             render_data[(y + i) * render_width + (x + j)] = data;
         }
     }
 
     return roundf(advance * font_scale[font_style]);
+    //~return font_width[font_normal];
+    //~return (c <= 32) ? font_indent : (x1 - x0 + off % scaling);
+    //~return (c <= 32) ? font_indent : font_width[font_normal];
 #undef scaling
 }
 
@@ -156,7 +166,7 @@ signed import_ttf_font(const char * name) {
     font_descent[font_style] = roundf(font_descent[font_style]
                                       * font_scale[font_style]);
 
-    for (signed index = 32; index <= font[font_style].numGlyphs; index++) {
+    for (signed index = '!'; index <= font[font_style].numGlyphs; index++) {
         signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
         stbtt_GetCodepointHMetrics(&font[font_style], index, &advance, &lsb);
@@ -169,14 +179,17 @@ signed import_ttf_font(const char * name) {
         signed width  = x1 - x0;
         signed height = y1 - y0;
 
-        if (width  > (signed) font_width[font_style]) {
+        if ((index == '!' + '6') && (font_style == font_normal)) {
+            font_indent = width;
+        }
+        if (width > (signed) font_width[font_style]) {
             font_width[font_style] = width;
         }
         if (height > (signed) font_height[font_style]) {
             font_height[font_style] = height;
         }
     }
-
+printf("wdh %u hgt %u ind %u asc %i, des %i gap %i scl %f\n", font_width[font_style], font_height[font_style], font_indent, font_ascent[font_style],font_descent[font_style], font_line_gap[font_style], font_scale[font_style]);
     font_loaded[font_style] = !font_loaded[font_style];
 
     return 0;

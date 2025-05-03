@@ -9,7 +9,7 @@ extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
 char * font_name       = "dejavusansmono";
-char * font_directory  = "/usr/share/fonts/TTF/";
+char * font_directory  = "/usr/share/fonts/";
 char * output_filename = "xeen.png";
 
 int font_size_opt = 24;
@@ -45,7 +45,8 @@ signed main(const int argc, const char * const argv[]) {
     ttf_quadruplet_t fonts = load_font(font_directory, font_name);
 
     if (!is_quadruplet_full(fonts)) {
-        fprintf(stderr, "Failed to load font '%s' from '%s'.\n", font_name, font_directory);
+        fprintf(stderr, "Failed to load font '%s' from '%s'.\n", font_name,
+                font_directory);
         return 1;
     }
 
