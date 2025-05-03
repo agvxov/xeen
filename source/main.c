@@ -13,9 +13,9 @@ char * output_filename = "xeen.png";
 int font_size_opt = 24;
 int tab_width     =  8;
 
-#define READ_BATCH_SIZE 64
-
+static
 sds stdin2str(void) {
+    const int READ_BATCH_SIZE = 64;
     sds r = sdsnew("");
 
     char buffer[READ_BATCH_SIZE + 1];

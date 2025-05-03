@@ -1,9 +1,10 @@
 #include "colorscheme.h"
 
+#include <math.h>
+
 const colour_t default_color      = 0xffffffff;
 const colour_t default_background = 0xff000000;
 
-#include <math.h>
 static
 colour_t factor_colour(colour_t c, float factor) {
     unsigned char r = (c >> 16) & 0xff;
@@ -23,6 +24,12 @@ colour_t to_bright(colour_t c) {
 
 colour_t to_faint(colour_t c) {
     return factor_colour(c, 0.8f);
+}
+
+colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
+    colour_t r;
+    r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
+    return r;
 }
 
 colour_t colorscheme[256] = {
@@ -283,9 +290,3 @@ colour_t colorscheme[256] = {
     [254] = 0xffe4e4e4,
     [255] = 0xffeeeeee,
 };
-
-colour_t rgb2colour_t(colour_t red, colour_t green, colour_t blue) {
-    colour_t r;
-    r = 0xff000000 | (blue << 16) | (green << 8) | (red << 0);
-    return r;
-}
