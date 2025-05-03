@@ -102,7 +102,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
         }
     }
 
-    return font_width[font_normal];
+    return (signed) (advance * font_scale[font_style]);
 #undef scaling
 }
 

@@ -8,8 +8,12 @@
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
+//~XOLATILE SPECIFIC FONT!
+//~char * font_name       = "terminus";
+//~char * font_directory  = "/usr/share/fonts/TTF";
+//~ANON SPECIFIC FONT?
 char * font_name       = "dejavusansmono";
-char * font_directory  = "/usr/share/fonts/";
+char * font_directory  = "/usr/share/fonts/dejavu";
 char * output_filename = "xeen.png";
 
 int font_size_opt = 24;
