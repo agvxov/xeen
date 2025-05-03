@@ -9,7 +9,7 @@ extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
 char * font_name       = "dejavusansmono";
-char * font_directory  = "/usr/share/fonts/";
+char * font_directory  = "/usr/share/fonts/TTF/";
 char * output_filename = "xeen.png";
 
 int font_size_opt = 24;

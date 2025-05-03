@@ -40,7 +40,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 BEGIN IN_CONTROL_SEQUENCE;
             }
 \t          {
-                x += font_width * (tab_width - x % tab_width);
+                x += font_width[font_style] * (tab_width - x % tab_width);
             }
 .           {
                 int offx = render_character(yytext[0], x, y);
@@ -54,7 +54,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
             }
 \n          {
                 x *= 0;
-                y += font_height;
+                y += font_height[font_style];
                 image_limit = (image_carry > image_limit)
                             ? image_carry
                             : image_limit;

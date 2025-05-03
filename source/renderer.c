@@ -23,10 +23,11 @@ static signed   font_descent[font_types]  = { 0 };
 static signed   font_line_gap[font_types] = { 0 };
 static char   * font_buffer[font_types]   = { NULL };
 
-font_type font_style  = font_normal;
-unsigned  font_size   = 24;
-unsigned  font_width  = 0;
-unsigned  font_height = 0;
+font_type font_style = font_normal;
+unsigned  font_size  = 24;
+
+unsigned font_width[font_types]  = { 0 };
+unsigned font_height[font_types] = { 0 };
 
 unsigned image_limit = 0;
 unsigned image_carry = 0;
@@ -40,7 +41,8 @@ static unsigned channel_g (unsigned colour) { return ((colour >>  8) & 0xff); }
 static unsigned channel_b (unsigned colour) { return ((colour >> 16) & 0xff); }
 static unsigned channel_a (unsigned colour) { return ((colour >> 24) & 0xff); }
 
-static colour_t get_colour(unsigned char alpha) {
+static
+colour_t get_colour(unsigned char alpha) {
     double scale = (double) alpha / 255.0;
 
     if (scale <= 0.0) { return render_bg; }
@@ -59,8 +61,8 @@ static colour_t get_colour(unsigned char alpha) {
 }
 
 void render_defaults(unsigned width, unsigned height) {
-    width  *= font_width;
-    height *= font_height;
+    width  *= font_width[font_style];
+    height *= font_height[font_style];
 
     render_data = calloc(width * height, sizeof(*render_data));
 
@@ -98,8 +100,10 @@ signed render_character(signed c, unsigned x, unsigned y) {
                               y1 - y0, scaling, font_scale[font_style],
                               font_scale[font_style], c);
 
-    for (unsigned i = 0; i < font_height; ++i) {
-        for (unsigned j = 0; j < font_width; ++j) {
+    font_width[font_style] = x1 - x0 + off % scaling;
+
+    for (unsigned i = 0; i < font_height[font_style]; ++i) {
+        for (unsigned j = 0; j < font_width[font_style]; ++j) {
             unsigned data = get_colour(pixels[i * scaling + j]);
             render_data[(y + i) * render_width + (x + j)] = data;
         }
@@ -118,7 +122,7 @@ signed import_ttf_font(const char * name) {
     }
 
     if (!font_file) {
-        fprintf(stderr, "ERROR: Failed to open font file...\n");
+        fprintf(stderr, "ERROR: Failed to open font file '%s'...\n", name);
         return 1;
     }
 
@@ -165,11 +169,11 @@ signed import_ttf_font(const char * name) {
         signed width  = x1 - x0;
         signed height = y1 - y0;
 
-        if (width  > (signed) font_width) {
-            font_width = width;
+        if (width  > (signed) font_width[font_style]) {
+            font_width[font_style] = width;
         }
-        if (height > (signed) font_height) {
-            font_height = height;
+        if (height > (signed) font_height[font_style]) {
+            font_height[font_style] = height;
         }
     }
 
