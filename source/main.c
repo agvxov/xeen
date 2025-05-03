@@ -7,9 +7,6 @@
 #include "ttf_quadruplet.h"
 #include "error.h"
 
-extern int get_dimensions(char * str, size_t n, int * h, int * w);
-extern int xeen(char * str, size_t n);
-
 //~XOLATILE SPECIFIC FONT!
 //~char * font_name       = "terminus";
 //~ANON SPECIFIC FONT?
@@ -19,6 +16,9 @@ char * output_filename = "xeen.png";
 
 int font_size_opt = 24;
 int tab_width     =  8;
+
+extern int get_dimensions(char * str, size_t n, int * h, int * w);
+extern int xeen(char * str, size_t n);
 
 static
 char * stdin2str(size_t * len) {
