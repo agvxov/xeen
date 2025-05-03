@@ -40,10 +40,7 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                 BEGIN IN_CONTROL_SEQUENCE;
             }
 \t          {
-                //x += font_width[font_style] * (tab_width - x % tab_width);
-                //x += font_width[font_style] * tab_width;
-                x += font_indent * (tab_width - x % tab_width);
-                //x += font_indent * tab_width;
+                x += font_width[font_normal] * tab_width;
             }
 .           {
                 int offx = render_character(yytext[0], x, y);

@@ -16,16 +16,14 @@ static unsigned   render_height = 0;
 
 static stbtt_fontinfo font[font_types] = { { 0 } };
 
-static signed   font_loaded[font_types]   = { 0 };
 static float    font_scale[font_types]    = { 0 };
 static signed   font_ascent[font_types]   = { 0 };
 static signed   font_descent[font_types]  = { 0 };
 static signed   font_line_gap[font_types] = { 0 };
 static char   * font_buffer[font_types]   = { NULL };
 
-font_type font_style  = font_normal;
-unsigned  font_size   = 24;
-unsigned  font_indent = 0;
+font_type font_style = font_normal;
+unsigned  font_size  = 24;
 
 unsigned font_width[font_types]  = { 0 };
 unsigned font_height[font_types] = { 0 };
@@ -83,53 +81,33 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
     signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-    if (!font_loaded[font_style]) {
-        font_style = font_normal;
-    }
-
     stbtt_GetCodepointHMetrics(&font[font_style], c, &advance, &lsb);
 
     stbtt_GetCodepointBitmapBox(&font[font_style], c, font_scale[font_style],
                                 font_scale[font_style], &x0, &y0, &x1, &y1);
 
-    signed off = roundf(lsb * font_scale[font_style]) + scaling
+    signed off = (signed)(lsb * font_scale[font_style]) + scaling
                * (font_ascent[font_style] + y0);
-
-    off = (off < 0) ? 0 : off;
 
     stbtt_MakeCodepointBitmap(&font[font_style], pixels + off, x1 - x0,
                               y1 - y0, scaling, font_scale[font_style],
                               font_scale[font_style], c);
 
-    //~stbi_write_png("lnao.png", scaling, scaling, 1, pixels,
-                   //~image_limit);
-                   //~exit(1);
-
-    //~for (unsigned i = 0; i < y1 - y0 + off / scaling; ++i) {
-        //~for (unsigned j = 0; j < x1 - x0 + off % scaling; ++j) {
     for (unsigned i = 0; i < font_height[font_style]; ++i) {
         for (unsigned j = 0; j < font_width[font_style]; ++j) {
-    //~for (unsigned i = y0; i < scaling; ++i) {
-        //~for (unsigned j = x0; j < scaling; ++j) {
-            colour_t data = get_colour(pixels[i * scaling + j]);
-            render_data[(y + i) * render_width + (x + j)] = data;
+            if (render_data[(y + i) * render_width + (x + j)] == render_no) {
+                colour_t data = get_colour(pixels[i * scaling + j]);
+                render_data[(y + i) * render_width + (x + j)] = data;
+            }
         }
     }
 
-    return roundf(advance * font_scale[font_style]);
-    //~return font_width[font_normal];
-    //~return (c <= 32) ? font_indent : (x1 - x0 + off % scaling);
-    //~return (c <= 32) ? font_indent : font_width[font_normal];
+    return font_width[font_normal];
 #undef scaling
 }
 
 signed import_ttf_font(const char * name) {
     FILE * font_file = fopen(name, "rb");
-
-    if (font_loaded[font_style]) {
-        fprintf(stderr, "ERROR: You already loaded this font style...\n");
-        return 1;
-    }
 
     if (!font_file) {
         fprintf(stderr, "ERROR: Failed to open font file '%s'...\n", name);
@@ -179,9 +157,6 @@ signed import_ttf_font(const char * name) {
         signed width  = x1 - x0;
         signed height = y1 - y0;
 
-        if ((index == '!' + '6') && (font_style == font_normal)) {
-            font_indent = width;
-        }
         if (width > (signed) font_width[font_style]) {
             font_width[font_style] = width;
         }
@@ -189,8 +164,6 @@ signed import_ttf_font(const char * name) {
             font_height[font_style] = height;
         }
     }
-printf("wdh %u hgt %u ind %u asc %i, des %i gap %i scl %f\n", font_width[font_style], font_height[font_style], font_indent, font_ascent[font_style],font_descent[font_style], font_line_gap[font_style], font_scale[font_style]);
-    font_loaded[font_style] = !font_loaded[font_style];
 
     return 0;
 }
@@ -213,9 +186,7 @@ signed export_png_image(const char * name) {
                    image_limit * 4);
 
     for (signed index = 0; index < font_types; ++index) {
-        if (font_loaded[index]) {
-            free(font_buffer[index]);
-        }
+        free(font_buffer[index]);
     }
 
     free(render_data);

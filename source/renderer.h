@@ -13,7 +13,6 @@ typedef enum {
 
 extern font_type font_style;
 extern unsigned  font_size;
-extern unsigned  font_indent;
 
 extern unsigned  font_width[font_types];
 extern unsigned  font_height[font_types];
