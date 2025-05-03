@@ -17,6 +17,6 @@ bool is_quadruplet_full(ttf_quadruplet_t q) {
     ;
 }
 
-extern ttf_quadruplet_t load_font(const char * target_name);
+extern ttf_quadruplet_t load_font(char * fonts_path, const char * target_name);
 
 #endif

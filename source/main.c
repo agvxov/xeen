@@ -3,11 +3,12 @@
 #include "opts.h"
 #include "renderer.h"
 #include "colorscheme.h"
+#include "ttf_quadruplet.h"
 
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
-char * font_filename   = "resource/terminus";
+char * font_filename   = "dejavusansmono";
 char * output_filename = "xeen.png";
 
 int font_size_opt = 24;
@@ -40,21 +41,22 @@ signed main(const int argc, const char * const argv[]) {
     render_bg = default_background;
     font_size = font_size_opt;
 
-    for (font_type i = 0; i < font_types; ++i) {
-        const char * font_name[font_types] = {
-            "normal",
-            "bold",
-            "italic",
-            "bold_italic",
-        };
-        char buf[0x666] = "";
-        snprintf(buf, 0x666, "%s/%s.ttf", font_filename, font_name[i]);
-        font_style = i;
-        if (import_ttf_font(buf)) {
-            return 1;
-        }
+    // This will be fixed once we have font_dir and font_name thing.
+    // It should be handled in CLI arguments I think...
+    ttf_quadruplet_t font_name = load_font(NULL, font_filename);
+
+    if (!is_quadruplet_full(font_name)) {
+        // Please provide normal error message?
+        // Also, we don't need this? It's used in source as loop break.
+        // Will load_font enter infinite loop on incorrect font name?
+        fprintf(stderr, "Oh fuck oh hell...\n");
+        return 1;
     }
 
+    font_style = font_normal;      import_ttf_font(font_name.normal);
+    font_style = font_bold;        import_ttf_font(font_name.bold);
+    font_style = font_italic;      import_ttf_font(font_name.italic);
+    font_style = font_bold_italic; import_ttf_font(font_name.bolditalic);
     font_style = font_normal;
 
     render_defaults(w, h);
