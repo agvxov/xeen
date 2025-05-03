@@ -57,15 +57,13 @@ ttf_quadruplet_t load_font(char * fonts_path, const char * target_name) {
             continue;
         }
 
-        char buf [1024] = "";
-
         int style = ttf_style(lower_name);
-        snprintf(buf, 1024, "%s/%s", fonts_path, base);
+        const char * fullpath = entry->fts_path;
         switch (style) {
-            case TTF_NORMAL:     r.normal     = strdup(buf); break;
-            case TTF_BOLD:       r.bold       = strdup(buf); break;
-            case TTF_ITALIC:     r.italic     = strdup(buf); break;
-            case TTF_BOLDITALIC: r.bolditalic = strdup(buf); break;
+            case TTF_NORMAL:     r.normal     = strdup(fullpath); break;
+            case TTF_BOLD:       r.bold       = strdup(fullpath); break;
+            case TTF_ITALIC:     r.italic     = strdup(fullpath); break;
+            case TTF_BOLDITALIC: r.bolditalic = strdup(fullpath); break;
         }
 
         if (is_quadruplet_full(r)) { break; }
