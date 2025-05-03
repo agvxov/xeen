@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "error.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -110,7 +111,7 @@ signed import_ttf_font(const char * name) {
     FILE * font_file = fopen(name, "rb");
 
     if (!font_file) {
-        fprintf(stderr, "ERROR: Failed to open font file '%s'...\n", name);
+        error("Failed to open font file '%s'.", name);
         return 1;
     }
 
@@ -125,7 +126,7 @@ signed import_ttf_font(const char * name) {
     if (!stbtt_InitFont(&font[font_style],
                         (unsigned char *)font_buffer[font_style],
                         0)) {
-        fprintf(stderr, "ERROR: Failed to initialize font...\n");
+        error("Failed to initialize font.");
         free(font_buffer[font_style]);
         return 1;
     }
@@ -169,11 +170,6 @@ signed import_ttf_font(const char * name) {
 }
 
 signed export_png_image(const char * name) {
-    if (name == NULL) {
-        fprintf (stderr, "ERROR: Name is null...\n");
-        return 1;
-    }
-
     unsigned * buffer = malloc(image_limit * render_height * sizeof(*buffer));
 
     for (unsigned y = 0; y < render_height; ++y) {

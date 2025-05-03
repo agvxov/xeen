@@ -4,16 +4,16 @@
 #include "renderer.h"
 #include "colorscheme.h"
 #include "ttf_quadruplet.h"
+#include "error.h"
 
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
 //~XOLATILE SPECIFIC FONT!
 //~char * font_name       = "terminus";
-//~char * font_directory  = "/usr/share/fonts/TTF";
 //~ANON SPECIFIC FONT?
 char * font_name       = "dejavusansmono";
-char * font_directory  = "/usr/share/fonts/dejavu";
+char * font_directory  = "/usr/share/fonts/";
 char * output_filename = "xeen.png";
 
 int font_size_opt = 24;
@@ -49,8 +49,7 @@ signed main(const int argc, const char * const argv[]) {
     ttf_quadruplet_t fonts = load_font(font_directory, font_name);
 
     if (!is_quadruplet_full(fonts)) {
-        fprintf(stderr, "Failed to load font '%s' from '%s'.\n", font_name,
-                font_directory);
+        error("Failed to load font '%s' from '%s'.", font_name, font_directory);
         return 1;
     }
 
@@ -64,6 +63,10 @@ signed main(const int argc, const char * const argv[]) {
     xeen(input, input_len);
 
     if (export_png_image(output_filename)) {
+        error(
+            "Failed to export '%s' (this could be either an internal or filesystem error).",
+            output_filename
+        );
         return 1;
     }
 

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
+#include "error.h"
 
 static
 void usage(void) {
@@ -42,14 +43,14 @@ void parse_args(const int argc, const char * const * const argv) {
             case 't': {
                 int e = sscanf(optarg, "%d", &tab_width);
                 if (!e) {
-                    fprintf(stderr, "Invalid tab width '%s'.\n", optarg);
+                    error("Invalid tab width '%s'.", optarg);
                     exit(1);
                 }
             } break;
             case 's': {
                 int e = sscanf(optarg, "%d", &font_size_opt);
                 if (!e) {
-                    fprintf(stderr, "Invalid font size '%s'.\n", optarg);
+                    error("Invalid font size '%s'.", optarg);
                     exit(1);
                 }
             } break;
@@ -60,7 +61,7 @@ void parse_args(const int argc, const char * const * const argv) {
                 font_directory = strdup(optarg);
             } break;
             case '?': {
-                fprintf(stderr, "Unknown argument '-%c'.\n", optopt);
+                error("Unknown argument '-%c'.", optopt);
                 exit(1);
             }
         }
