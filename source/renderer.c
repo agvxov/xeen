@@ -101,9 +101,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
     for (unsigned i = 0; i < font_height; ++i) {
         for (unsigned j = 0; j < font_width; ++j) {
             unsigned data = get_colour(pixels[i * scaling + j]);
-            if (render_data[(y + i) * render_width + (x + j)] == render_no) {
-                render_data[(y + i) * render_width + (x + j)] = data;
-            }
+            render_data[(y + i) * render_width + (x + j)] = data;
         }
     }
 
