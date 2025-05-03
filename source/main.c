@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "sds.h"
+#include <stdlib.h>
+#include <string.h>
 #include "opts.h"
 #include "renderer.h"
 #include "colorscheme.h"
@@ -20,16 +21,23 @@ int font_size_opt = 24;
 int tab_width     =  8;
 
 static
-sds stdin2str(void) {
-    const int READ_BATCH_SIZE = 64;
-    sds r = sdsnew("");
+char * stdin2str(size_t * len) {
+    const int READ_BATCH_SIZE = 1024;
+    char * r = NULL;
+    size_t r_len = 0;
 
     char buffer[READ_BATCH_SIZE + 1];
     int read_count = 0;
     do {
         read_count = fread(buffer, 1, READ_BATCH_SIZE, stdin);
-        r = sdscatlen(r, buffer, read_count);
+        r = realloc(r, r_len + read_count);
+        memcpy(r + r_len, buffer, read_count);
+        r_len += read_count;
     } while (read_count == READ_BATCH_SIZE);
+    realloc(r, r_len + 1);
+    r[r_len] = '\0';
+
+    *len = r_len;
 
     return r;
 }
@@ -37,8 +45,8 @@ sds stdin2str(void) {
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
-    sds input        = stdin2str();
-    size_t input_len = sdslen(input);
+    size_t input_len;
+    char * input = stdin2str(&input_len);
 
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);
@@ -70,7 +78,7 @@ signed main(const int argc, const char * const argv[]) {
         return 1;
     }
 
-    sdsfree(input);
+    free(input);
 
     return 0;
 }
