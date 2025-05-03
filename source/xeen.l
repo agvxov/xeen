@@ -156,5 +156,7 @@ int xeen(char * str, size_t n) {
 
     r = xeenlex();
 
+    yy_delete_buffer(YY_CURRENT_BUFFER);
+
     return r;
 }

@@ -17,6 +17,15 @@ bool is_quadruplet_full(ttf_quadruplet_t q) {
     ;
 }
 
+static inline
+void free_ttf_quadruplet(ttf_quadruplet_t q) {
+    extern void free(void * ptr);
+    free(q.normal);
+    free(q.bold);
+    free(q.italic);
+    free(q.bold_italic);
+}
+
 extern ttf_quadruplet_t load_font_paths(const char * root_font_path, const char * target_name);
 
 #endif

@@ -17,6 +17,9 @@ char * output_filename = "xeen.png";
 int font_size_opt = 24;
 int tab_width     =  8;
 
+/* Trusty Flex scanners.
+ * NOTE: They are one use! They are freed after the first run!
+ */
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
@@ -83,6 +86,7 @@ signed main(const int argc, const char * const argv[]) {
     }
 
     free(input);
+    free_ttf_quadruplet(fonts);
 
     return 0;
   #undef CHECKED_LOAD

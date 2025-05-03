@@ -62,5 +62,7 @@ int get_dimensions(char * str, size_t n, int * h, int * w) {
     *h = yylineno;
     *w = yycolno;
 
+    yy_delete_buffer(YY_CURRENT_BUFFER);
+
     return r;
 }
