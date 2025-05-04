@@ -20,6 +20,7 @@ instead it assumes its input was intelligently formatted.
 
 To highlight code, we recommend:
 + [xighlight]()
++ [nvcat](https://github.com/brianhuster/nvcat)
 + [bat](https://github.com/sharkdp/bat)
 
 ## CLI
@@ -31,4 +32,5 @@ xeen [options]
   -t <n>    : set tab width
   -s <n>    : set font size
   -f <file> : set font
+  -F <file> : set font directory
 ```
