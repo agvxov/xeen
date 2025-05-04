@@ -32,7 +32,7 @@ ifeq (${DEBUG}, 1)
   CFLAGS   += ${CFLAGS.D}
   CXXFLAGS += ${CFLAGS.D}
 else
-  CFLAGS += -O3 -flto=auto -fno-stack-protector
+  CFLAGS += -O3 -g -flto=auto -fno-stack-protector
 endif
 
 CFLAGS += -std=c2x

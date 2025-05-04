@@ -26,11 +26,11 @@ static char   * font_buffer[font_types]   = { NULL };
 static unsigned          * glyph_count  = NULL;
 static signed          * * glyph_index  = NULL;
 static unsigned        * * glyph_width  = NULL;
-static unsigned        * * glyph_height = NULL;
 static unsigned char * * * glyph_data   = NULL;
 
-font_type font_style = font_normal;
-unsigned  font_size  = 24;
+font_type font_style  = font_normal;
+unsigned  font_size   = 24;
+unsigned  font_indent = 0;
 
 unsigned font_width[font_types]  = { 0 };
 unsigned font_height[font_types] = { 0 };
@@ -96,7 +96,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
         glyph_index[font_style][cur] = c;
 
-        glyph_data[font_style][cur] = calloc(font_size * font_size + font_size,
+        glyph_data[font_style][cur] = calloc(font_size * font_size * 2,
                                              sizeof(***glyph_data));
 
         stbtt_GetCodepointHMetrics(&font_info[font_style], c, &advance, &lsb);
@@ -108,17 +108,19 @@ signed render_character(signed c, unsigned x, unsigned y) {
         signed off = roundf(lsb * font_scale[font_style]) + font_size
                    * (font_ascent[font_style] + y0);
 
+        off = (off < 0) ? 0 : off; // TODO
+
+        glyph_width[font_style][cur] = roundf(advance * font_scale[font_style]);
+
         stbtt_MakeCodepointBitmap(&font_info[font_style],
                                   glyph_data[font_style][cur] + off,
                                   x1 - x0, y1 - y0, font_size,
                                   font_scale[font_style],
                                   font_scale[font_style], c);
-
-        glyph_width[font_style][cur] = roundf(advance * font_scale[font_style]);
     }
 
-    for (unsigned i = 0; i < font_height[font_style]; ++i) {
-        for (unsigned j = 0; j < font_width[font_style]; ++j) {
+    for (unsigned i = 0; i < font_size; ++i) {
+        for (unsigned j = 0; j < glyph_width[font_style][cur]; ++j) {
             if (render_data[(y + i) * render_width + (x + j)] == render_no) {
                 render_data[(y + i) * render_width + (x + j)] =
                     get_colour(glyph_data[font_style][cur][i * font_size + j]);
@@ -188,11 +190,18 @@ signed import_ttf_font(const char * name) {
         }
     }
 
+    if (!font_indent) {
+        signed advance = 0, lsb = 0;
+
+        stbtt_GetCodepointHMetrics(&font_info[font_style], ' ', &advance, &lsb);
+
+        font_indent = roundf(advance * font_scale[font_style]);
+    }
+
     if (!glyph_count) {
         glyph_count  = calloc(font_types, sizeof(*glyph_count));
         glyph_index  = calloc(font_types, sizeof(*glyph_index));
         glyph_width  = calloc(font_types, sizeof(*glyph_width));
-        glyph_height = calloc(font_types, sizeof(*glyph_height));
         glyph_data   = calloc(font_types, sizeof(*glyph_data));
     }
 
@@ -200,7 +209,6 @@ signed import_ttf_font(const char * name) {
 
     glyph_index[font_style]  = calloc(count, sizeof(**glyph_index));
     glyph_width[font_style]  = calloc(count, sizeof(**glyph_width));
-    glyph_height[font_style] = calloc(count, sizeof(**glyph_height));
     glyph_data[font_style]   = calloc(count, sizeof(**glyph_data));
 
     return 0;
@@ -225,7 +233,6 @@ signed export_png_image(const char * name) {
 
         free(glyph_index[font]);
         free(glyph_width[font]);
-        free(glyph_height[font]);
         free(glyph_data[font]);
 
         free(font_buffer[font]);
@@ -234,7 +241,6 @@ signed export_png_image(const char * name) {
     free(glyph_count);
     free(glyph_index);
     free(glyph_width);
-    free(glyph_height);
     free(glyph_data);
 
     free(render_data);
