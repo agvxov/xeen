@@ -55,10 +55,10 @@ void parse_args(const int argc, const char * const * const argv) {
                 }
             } break;
             case 'f': {
-                font_name = strdup(optarg);
+                font_name = optarg;
             } break;
             case 'F': {
-                font_directory = strdup(optarg);
+                font_directory = optarg;
             } break;
             case '?': {
                 error("Unknown argument '-%c'.", optopt);

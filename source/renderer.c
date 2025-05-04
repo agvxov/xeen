@@ -96,7 +96,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
         glyph_index[font_style][cur] = c;
 
-        glyph_data[font_style][cur] = calloc(font_size*font_size,
+        glyph_data[font_style][cur] = calloc(font_size * font_size + font_size,
                                              sizeof(***glyph_data));
 
         stbtt_GetCodepointHMetrics(&font_info[font_style], c, &advance, &lsb);
@@ -167,7 +167,7 @@ signed import_ttf_font(const char * name) {
     font_descent[font_style] = roundf(font_descent[font_style]
                                       * font_scale[font_style]);
 
-    for (signed glyph = '!'; glyph <= font_info[font_style].numGlyphs; ++glyph) {
+    for (signed glyph = 0; glyph <= font_info[font_style].numGlyphs; ++glyph) {
         signed advance = 0, lsb = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
         stbtt_GetCodepointHMetrics(&font_info[font_style], glyph, &advance, &lsb);
@@ -188,20 +188,20 @@ signed import_ttf_font(const char * name) {
         }
     }
 
-    glyph_count  = calloc(font_types, sizeof(*glyph_count));
-    glyph_index  = calloc(font_types, sizeof(*glyph_index));
-    glyph_width  = calloc(font_types, sizeof(*glyph_width));
-    glyph_height = calloc(font_types, sizeof(*glyph_height));
-    glyph_data   = calloc(font_types, sizeof(*glyph_data));
-
-    for (signed font = 0; font < font_types; ++font) {
-        unsigned count = font_info[font].numGlyphs;
-
-        glyph_index[font]  = calloc(count, sizeof(**glyph_index));
-        glyph_width[font]  = calloc(count, sizeof(**glyph_width));
-        glyph_height[font] = calloc(count, sizeof(**glyph_height));
-        glyph_data[font]   = calloc(count, sizeof(**glyph_data));
+    if (!glyph_count) {
+        glyph_count  = calloc(font_types, sizeof(*glyph_count));
+        glyph_index  = calloc(font_types, sizeof(*glyph_index));
+        glyph_width  = calloc(font_types, sizeof(*glyph_width));
+        glyph_height = calloc(font_types, sizeof(*glyph_height));
+        glyph_data   = calloc(font_types, sizeof(*glyph_data));
     }
+
+    unsigned count = font_info[font_style].numGlyphs;
+
+    glyph_index[font_style]  = calloc(count, sizeof(**glyph_index));
+    glyph_width[font_style]  = calloc(count, sizeof(**glyph_width));
+    glyph_height[font_style] = calloc(count, sizeof(**glyph_height));
+    glyph_data[font_style]   = calloc(count, sizeof(**glyph_data));
 
     return 0;
 }
