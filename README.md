@@ -11,17 +11,17 @@ without monitor-size or shaky-hand interference.
 ```
     xighligth source/main.c | xeen
 ```
-Ouput:
+Output:
 ![documentation/example.png](documentation/example.png)
 
-Following the UNIX philosphy however,
+Following the UNIX philosophy however,
 Xeen itself does not highlight code for you,
-instead it assumes its input was intelligently formatted.
+instead it assumes the input was intelligently annotated with ANSI escapes.
 
 To highlight code, we recommend:
-+ [xighlight]()
-+ [nvcat](https://github.com/brianhuster/nvcat)
-+ [bat](https://github.com/sharkdp/bat)
+* [xighlight](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/xolatile/xolatilization.git)
+* [nvcat](https://github.com/brianhuster/nvcat)
+* [bat](https://github.com/sharkdp/bat)
 
 ## CLI
 ```
