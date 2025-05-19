@@ -29,20 +29,20 @@ static unsigned render_width  = 10000;
 static unsigned * render_data = NULL;
 
 static FT_Library ft;
-static FT_Face face;
+static FT_Face faces[font_types];
 
 static
 signed import_ttf_font(const char * name) {
-    if (FT_New_Face(ft, name, 0, &face)) {
+    if (FT_New_Face(ft, name, 0, &faces[font_style])) {
         error("Could not load font: '%s'.", name);
         return 1;
     }
-    if (FT_Set_Pixel_Sizes(face, 0, font_size)) {
+    if (FT_Set_Pixel_Sizes(faces[font_style], 0, font_size)) {
         error("Could not set font size.");
         return 1;
     }
-    font_width[font_style] = face->size->metrics.max_advance >> 6;
-    font_height[font_style] = face->size->metrics.height >> 6;
+    font_width[font_style]  = faces[font_style]->size->metrics.max_advance >> 6;
+    font_height[font_style] = faces[font_style]->size->metrics.height >> 6;
 
     return 0;
 }
@@ -83,15 +83,15 @@ signed renderer_init(unsigned width, unsigned height, const char * normal, const
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
-    if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+    if (FT_Load_Char(faces[font_style], c, FT_LOAD_RENDER)) {
         error("Could not load character '%c'.", c);
         return 1;
     }
 
-    FT_Bitmap * bmp = &face->glyph->bitmap;
+    FT_Bitmap * bmp = &faces[font_style]->glyph->bitmap;
 
-    int x_off = x + face->glyph->bitmap_left;
-    int y_off = y - face->glyph->bitmap_top;
+    int x_off = x + faces[font_style]->glyph->bitmap_left;
+    int y_off = y - faces[font_style]->glyph->bitmap_top;
 
     for (int row = 0; row < bmp->rows; row++) {
         for (int col = 0; col < bmp->width; col++) {
@@ -102,13 +102,17 @@ signed render_character(signed c, unsigned x, unsigned y) {
             &&  yi >= 0
             &&  yi < render_height) {
                 unsigned char gray = bmp->buffer[row * bmp->pitch + col];
-                unsigned rgb = (gray << 16) | (gray << 8) | gray;
+                unsigned char r = ((render_fg >> 16) & 0xFF) * gray / 255;
+                unsigned char g = ((render_fg >> 8)  & 0xFF) * gray / 255;
+                unsigned char b = ( render_fg        & 0xFF) * gray / 255;
+                unsigned rgb = (r << 16) | (g << 8) | b;
+
                 render_data[yi * render_width + xi] |= rgb;
             }
         }
     }
 
-    return face->glyph->advance.x >> 6;
+    return faces[font_style]->glyph->advance.x >> 6;
 }
 
 signed export_png_image(const char * name) {
