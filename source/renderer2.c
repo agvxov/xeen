@@ -101,7 +101,9 @@ signed render_character(signed c, unsigned x, unsigned y) {
             &&  xi < render_width
             &&  yi >= 0
             &&  yi < render_height) {
-                render_data[yi * render_width + xi] = bmp->buffer[row * bmp->pitch + col];
+                unsigned char gray = bmp->buffer[row * bmp->pitch + col];
+                unsigned rgb = (gray << 16) | (gray << 8) | gray;
+                render_data[yi * render_width + xi] |= rgb;
             }
         }
     }
