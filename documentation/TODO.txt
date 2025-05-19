@@ -1,1 +1,3 @@
-%empty
++ colorful.blob chimps out
++ background colors are not handled for freetype
++ the fonts should be baked in (#embed)

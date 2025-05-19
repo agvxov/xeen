@@ -19,7 +19,7 @@ Xeen itself does not highlight code for you,
 instead it assumes the input was intelligently annotated with ANSI escapes.
 
 To highlight code, we recommend:
-* [xighlight](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/xolatile/xolatilization.git)
+* [xighlight](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/xolatile/xolatilization.git) (onion)
 * [nvcat](https://github.com/brianhuster/nvcat)
 * [bat](https://github.com/sharkdp/bat)
 
