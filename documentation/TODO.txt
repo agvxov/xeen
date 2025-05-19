@@ -1,5 +1,1 @@
-+ how do we threat bold/italics, what is my interface?
-+ how should we implement "faint"? how much oppacity should it take away?
-+ unicode is blocked from render_character currently; it should handle it gracefully even if it cant render it
-+ could you expand the templeOS font with box drawing characters?
-+ why are my color changes not showing? theoretically im setting the render color, but everything is the standard color
+%empty
