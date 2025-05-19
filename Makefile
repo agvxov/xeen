@@ -2,13 +2,13 @@
 .SUFFIXES:
 
 # --- Config
-#RENDERER ?= stb
-RENDERER ?= freetype
+RENDERER ?= stb
+#RENDERER ?= freetype
 ifeq (${RENDERER}, stb)
-  SOURCE += renderer.c
+  RENDERER_PATH = ${SOURCE.d}/renderer.impl/stb/
   CPPFLAGS += -DRENDERER='"STB static renderer"'
 else ifeq (${RENDERER}, freetype)
-  SOURCE   += renderer2.c
+  RENDERER_PATH = ${SOURCE.d}/renderer.impl/freetype/
   CPPFLAGS += $$(pkg-config --cflags freetype2)
   LDLIBS   += $$(pkg-config --libs freetype2)
   CPPFLAGS += -DRENDERER='"FreeType2 dynamic renderer"'
@@ -20,7 +20,7 @@ endif
 SOURCE.d := source/
 OBJECT.d := object/
 
-SOURCE += main.c opts.c colorscheme.c ttf_quadruplet.c
+SOURCE += main.c renderer.c opts.c colorscheme.c ttf_quadruplet.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
@@ -28,7 +28,7 @@ GENSOURCE := dimensions.yy.c xeen.yy.c
 GENOBJECT := ${GENSOURCE}
 GENOBJECT := $(subst .c,.o,${GENOBJECT})
 
-vpath %.c ${SOURCE.d}
+vpath %.c ${SOURCE.d}:${RENDERER_PATH}
 vpath %.l ${SOURCE.d}
 vpath %.yy.c ${OBJECT.d}
 vpath %.o ${OBJECT.d}
