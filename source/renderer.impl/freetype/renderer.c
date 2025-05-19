@@ -136,6 +136,8 @@ signed export_png_image(const char * name) {
         image_limit * 4
     );
 
+    free(buffer);
+
     return r;
   #undef COMPRESSION_LEVEL
 }
