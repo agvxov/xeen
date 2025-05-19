@@ -31,14 +31,38 @@ static unsigned * render_data = NULL;
 static FT_Library ft;
 static FT_Face face;
 
-signed renderer_init(unsigned width, unsigned height) {
-    image_limit = 0;
-    image_carry = 0;
+static
+signed import_ttf_font(const char * name) {
+    if (FT_New_Face(ft, name, 0, &face)) {
+        error("Could not load font: '%s'.", name);
+        return 1;
+    }
+    if (FT_Set_Pixel_Sizes(face, 0, font_size)) {
+        error("Could not set font size.");
+        return 1;
+    }
+    font_width[font_style] = face->size->metrics.max_advance >> 6;
+    font_height[font_style] = face->size->metrics.height >> 6;
+
+    return 0;
+}
+
+signed renderer_init(unsigned width, unsigned height, const char * normal, const char * bold, const char * italic, const char * bold_italic) {
+  #define CHECKED_LOAD(x) do {     \
+    font_style = font_ ## x;       \
+    import_ttf_font(x);            \
+  } while (0)
 
     if (FT_Init_FreeType(&ft)) {
         error("Could not initialize FreeType.\n");
         return 1;
     }
+
+    CHECKED_LOAD(normal);
+    CHECKED_LOAD(bold);
+    CHECKED_LOAD(italic);
+    CHECKED_LOAD(bold_italic);
+    font_style = font_normal;
 
     width  *= font_width[font_style];
     height *= font_height[font_style];
@@ -55,21 +79,7 @@ signed renderer_init(unsigned width, unsigned height) {
     render_height = height;
 
     return 0;
-}
-
-signed import_ttf_font(const char * name) {
-    if (FT_New_Face(ft, name, 0, &face)) {
-        error("Could not load font: '%s'.", name);
-        return 1;
-    }
-    if (FT_Set_Pixel_Sizes(face, 0, font_size)) {
-        error("Could not set font size.");
-        return 1;
-    }
-    font_width[font_style] = face->size->metrics.max_advance >> 6;
-    font_height[font_style] = face->size->metrics.height >> 6;
-
-    return 0;
+  #undef CHECKED_LOAD
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {

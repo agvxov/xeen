@@ -22,10 +22,6 @@ extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
 
 signed main(const int argc, const char * const argv[]) {
-  #define CHECKED_LOAD(x) do {     \
-    font_style = font_ ## x;       \
-    import_ttf_font(fonts. x);  \
-  } while (0)
     parse_args(argc, argv);
 
     size_t input_len;
@@ -44,13 +40,15 @@ signed main(const int argc, const char * const argv[]) {
         return 1;
     }
 
-    renderer_init(w, h);
+    renderer_init(
+        w,
+        h,
+        fonts.normal,
+        fonts.bold,
+        fonts.italic,
+        fonts.bold_italic
+    );
 
-    CHECKED_LOAD(normal);
-    CHECKED_LOAD(bold);
-    CHECKED_LOAD(italic);
-    CHECKED_LOAD(bold_italic);
-    font_style = font_normal;
     xeen(input, input_len);
 
     if (export_png_image(output_filename)) {
@@ -65,5 +63,4 @@ signed main(const int argc, const char * const argv[]) {
     free_ttf_quadruplet(fonts);
 
     return 0;
-  #undef CHECKED_LOAD
 }

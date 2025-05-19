@@ -25,11 +25,10 @@ extern colour_t render_fg;
 extern colour_t render_bg;
 extern colour_t render_no;
 
-extern signed renderer_init(unsigned width, unsigned height);
+extern signed renderer_init(unsigned width, unsigned height, const char * normal, const char * bold, const char * italic, const char * bold_italic);
 
 extern signed render_character(signed c, unsigned x, unsigned y);
 
-extern signed import_ttf_font(const char * name);
 extern signed export_png_image(const char * name);
 
 #endif

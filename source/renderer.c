@@ -48,6 +48,8 @@ static unsigned channel_g (unsigned colour) { return ((colour >>  8) & 0xff); }
 static unsigned channel_b (unsigned colour) { return ((colour >> 16) & 0xff); }
 static unsigned channel_a (unsigned colour) { return ((colour >> 24) & 0xff); }
 
+static signed import_ttf_font(const char * name);
+
 static
 colour_t get_colour(unsigned char alpha) {
     double scale = (double) alpha / 255.0;
@@ -67,7 +69,18 @@ colour_t get_colour(unsigned char alpha) {
     return ((r << 0) | (g << 8) | (b << 16) | (a << 24));
 }
 
-signed renderer_init(unsigned width, unsigned height) {
+signed renderer_init(unsigned width, unsigned height, const char * normal, const char * bold, const char * italic, const char * bold_italic) {
+  #define CHECKED_LOAD(x) do {     \
+    font_style = font_ ## x;       \
+    import_ttf_font(x);            \
+  } while (0)
+
+    CHECKED_LOAD(normal);
+    CHECKED_LOAD(bold);
+    CHECKED_LOAD(italic);
+    CHECKED_LOAD(bold_italic);
+    font_style = font_normal;
+
     width  *= font_width[font_style];
     height *= font_height[font_style];
 
@@ -81,6 +94,9 @@ signed renderer_init(unsigned width, unsigned height) {
 
     render_width  = width;
     render_height = height;
+
+    return 0;
+  #undef CHECKED_LOAD
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
@@ -132,6 +148,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
     return glyph_width[font_style][cur];
 }
 
+static
 signed import_ttf_font(const char * name) {
     font_buffer[font_style] = read_entire_file(name);
 
