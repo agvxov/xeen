@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "error.h"
+#include "io.inc"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -66,7 +67,7 @@ colour_t get_colour(unsigned char alpha) {
     return ((r << 0) | (g << 8) | (b << 16) | (a << 24));
 }
 
-void render_defaults(unsigned width, unsigned height) {
+signed renderer_init(unsigned width, unsigned height) {
     width  *= font_width[font_style];
     height *= font_height[font_style];
 
@@ -132,20 +133,9 @@ signed render_character(signed c, unsigned x, unsigned y) {
 }
 
 signed import_ttf_font(const char * name) {
-    FILE * font_file = fopen(name, "rb");
+    font_buffer[font_style] = read_entire_file(name);
 
-    if (!font_file) {
-        error("Failed to open font file '%s'.", name);
-        return 1;
-    }
-
-    fseek(font_file, 0, SEEK_END);
-    long font_size_bytes = ftell(font_file);
-    fseek(font_file, 0, SEEK_SET);
-
-    font_buffer[font_style] = malloc(font_size_bytes);
-    fread(font_buffer[font_style], 1, font_size_bytes, font_file);
-    fclose(font_file);
+    if (!font_buffer[font_style]) { return 1; }
 
     if (!stbtt_InitFont(&font_info[font_style],
                         (unsigned char *)font_buffer[font_style],
@@ -215,6 +205,9 @@ signed import_ttf_font(const char * name) {
 }
 
 signed export_png_image(const char * name) {
+    int r = 0;
+
+    // XXX: xolatile, why are you making a copy? i dont get it.
     unsigned * buffer = malloc(image_limit * render_height * sizeof(*buffer));
 
     for (unsigned y = 0; y < render_height; ++y) {
@@ -223,8 +216,14 @@ signed export_png_image(const char * name) {
         }
     }
 
-    stbi_write_png(name, image_limit, render_height, 4, buffer,
-                   image_limit * 4);
+    r = !stbi_write_png(
+        name,
+        image_limit,
+        render_height,
+        4,
+        buffer,
+        image_limit * 4
+    );
 
     for (signed font = 0; font < font_types; ++font) {
         for (signed glyph = 0; glyph < glyph_count[font]; ++glyph) {
@@ -246,5 +245,5 @@ signed export_png_image(const char * name) {
     free(render_data);
     free(buffer);
 
-    return 0;
+    return r;
 }

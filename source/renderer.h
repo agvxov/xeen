@@ -25,7 +25,7 @@ extern colour_t render_fg;
 extern colour_t render_bg;
 extern colour_t render_no;
 
-extern void render_defaults(unsigned width, unsigned height);
+extern signed renderer_init(unsigned width, unsigned height);
 
 extern signed render_character(signed c, unsigned x, unsigned y);
 

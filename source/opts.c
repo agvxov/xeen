@@ -32,9 +32,12 @@ void parse_args(const int argc, const char * const * const argv) {
                 exit(0);
             } break;
             case 'v': {
-                puts(
+                fputs(
                     #include "version.inc"
+                    , stdout
                 );
+                fputs(" - ", stdout);
+                puts(RENDERER);
                 exit(0);
             } break;
             case 'o': {

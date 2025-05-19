@@ -6,10 +6,8 @@
 #include "colorscheme.h"
 #include "ttf_quadruplet.h"
 #include "error.h"
+#include "io.inc"
 
-//~XOLATILE SPECIFIC FONT!
-//~char * font_name       = "terminus";
-//~ANON SPECIFIC FONT?
 char * font_name       = "dejavusansmono";
 char * font_directory  = "/usr/share/fonts/";
 char * output_filename = "xeen.png";
@@ -22,28 +20,6 @@ int tab_width     =  8;
  */
 extern int get_dimensions(char * str, size_t n, int * h, int * w);
 extern int xeen(char * str, size_t n);
-
-static
-char * stdin2str(size_t * len) {
-    const int READ_BATCH_SIZE = 1024;
-    char * r = NULL;
-    size_t r_len = 0;
-
-    char buffer[READ_BATCH_SIZE + 1];
-    int read_count = 0;
-    do {
-        read_count = fread(buffer, 1, READ_BATCH_SIZE, stdin);
-        r = realloc(r, r_len + read_count);
-        memcpy(r + r_len, buffer, read_count);
-        r_len += read_count;
-    } while (read_count == READ_BATCH_SIZE);
-    r = realloc(r, r_len + 1);
-    r[r_len] = '\0';
-
-    *len = r_len;
-
-    return r;
-}
 
 signed main(const int argc, const char * const argv[]) {
   #define CHECKED_LOAD(x) do {     \
@@ -68,13 +44,13 @@ signed main(const int argc, const char * const argv[]) {
         return 1;
     }
 
+    renderer_init(w, h);
+
     CHECKED_LOAD(normal);
     CHECKED_LOAD(bold);
     CHECKED_LOAD(italic);
     CHECKED_LOAD(bold_italic);
     font_style = font_normal;
-
-    render_defaults(w, h);
     xeen(input, input_len);
 
     if (export_png_image(output_filename)) {

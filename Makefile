@@ -1,11 +1,26 @@
 .PHONY: test clean
 .SUFFIXES:
 
+# --- Config
+#RENDERER ?= stb
+RENDERER ?= freetype
+ifeq (${RENDERER}, stb)
+  SOURCE += renderer.c
+  CPPFLAGS += -DRENDERER='"STB static renderer"'
+else ifeq (${RENDERER}, freetype)
+  SOURCE   += renderer2.c
+  CPPFLAGS += $$(pkg-config --cflags freetype2)
+  LDLIBS   += $$(pkg-config --libs freetype2)
+  CPPFLAGS += -DRENDERER='"FreeType2 dynamic renderer"'
+else
+  $(error $$RENDERER must be [stb|freetype], but was '${RENDERER}'.)
+endif
+
 # --- Paths / files
 SOURCE.d := source/
 OBJECT.d := object/
 
-SOURCE := main.c opts.c renderer.c colorscheme.c ttf_quadruplet.c
+SOURCE += main.c opts.c colorscheme.c ttf_quadruplet.c
 OBJECT := ${SOURCE}
 OBJECT := $(subst .c,.o,${OBJECT})
 
@@ -38,7 +53,7 @@ endif
 CFLAGS += -std=c2x
 
 CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d}
-LDLIBS := -lm
+LDLIBS   += -lm
 
 # --- Rule Section ---
 all: ${OUT}
