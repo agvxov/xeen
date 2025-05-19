@@ -113,7 +113,6 @@ signed export_png_image(const char * name) {
   #define COMPRESSION_LEVEL 4
     int r = 0;
 
-    // XXX: xolatile, why are you making a copy? i dont get it.
     unsigned * buffer = malloc(image_limit * render_height * sizeof(*buffer));
 
     for (unsigned y = 0; y < render_height; ++y) {
