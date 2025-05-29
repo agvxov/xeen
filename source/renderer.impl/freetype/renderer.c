@@ -31,6 +31,23 @@ static unsigned * render_data = NULL;
 static FT_Library ft;
 static FT_Face faces[font_types];
 
+static inline
+colour_t blend_colors(colour_t background, colour_t foreground, colour_t opacity) {
+    unsigned char bg_r = (background >> 16) & 0xFF;
+    unsigned char bg_g = (background >> 8)  & 0xFF;
+    unsigned char bg_b = background & 0xFF;
+
+    unsigned char fg_r = (foreground >> 16) & 0xFF;
+    unsigned char fg_g = (foreground >> 8)  & 0xFF;
+    unsigned char fg_b = foreground & 0xFF;
+
+    unsigned char out_r = (fg_r * opacity + bg_r * (255 - opacity)) / 255;
+    unsigned char out_g = (fg_g * opacity + bg_g * (255 - opacity)) / 255;
+    unsigned char out_b = (fg_b * opacity + bg_b * (255 - opacity)) / 255;
+
+    return (0xFF << 24) | (out_r << 16) | (out_g << 8) | out_b;
+}
+
 static
 signed import_ttf_font(const char * name) {
     if (FT_New_Face(ft, name, 0, &faces[font_style])) {
@@ -117,12 +134,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
             &&  yi >= 0
             &&  yi < render_height) {
                 unsigned char gray = bmp->buffer[row * bmp->pitch + col];
-                unsigned char r = ((render_fg >> 16) & 0xFF) * gray / 255;
-                unsigned char g = ((render_fg >> 8)  & 0xFF) * gray / 255;
-                unsigned char b = ( render_fg        & 0xFF) * gray / 255;
-                unsigned rgb = (r << 16) | (g << 8) | b;
-
-                render_data[yi * render_width + xi] |= rgb;
+                render_data[yi * render_width + xi] = blend_colors(render_bg, render_fg, gray);
             }
         }
     }
