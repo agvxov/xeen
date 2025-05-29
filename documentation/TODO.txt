@@ -1,2 +1,2 @@
-+ background colors are not handled for freetype
++ the background rectangles are off compared to real terminals; they start too high and end too low
 + the fonts should be baked in (#embed)
