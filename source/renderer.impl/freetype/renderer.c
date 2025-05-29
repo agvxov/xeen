@@ -91,7 +91,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
     FT_Bitmap * bmp = &faces[font_style]->glyph->bitmap;
 
     int x_off = x + faces[font_style]->glyph->bitmap_left;
-    int y_off = y - faces[font_style]->glyph->bitmap_top;
+    int y_off = y - faces[font_style]->glyph->bitmap_top + font_size;
 
     for (int row = 0; row < bmp->rows; row++) {
         for (int col = 0; col < bmp->width; col++) {

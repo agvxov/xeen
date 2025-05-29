@@ -1,4 +1,2 @@
-+ using freetype, the coordinates are off, so that the first line never shows properly;
-if you are lucky, the bottom of 'g's will dingling from the top (colorful.blob chimps out)
 + background colors are not handled for freetype
 + the fonts should be baked in (#embed)
