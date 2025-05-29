@@ -93,6 +93,21 @@ signed render_character(signed c, unsigned x, unsigned y) {
     int x_off = x + faces[font_style]->glyph->bitmap_left;
     int y_off = y - faces[font_style]->glyph->bitmap_top + font_size;
 
+    // Background
+    for (int row = 0; row < font_size; row++) {
+        for (int col = 0; col < faces[font_style]->glyph->advance.x >> 6; col++) {
+            int xi = x + col;
+            int yi = y + row;
+            if (xi >= 0
+            &&  xi < render_width
+            &&  yi >= 0
+            &&  yi < render_height) {
+                render_data[yi * render_width + xi] = render_bg;
+            }
+        }
+    }
+
+    // Character
     for (int row = 0; row < bmp->rows; row++) {
         for (int col = 0; col < bmp->width; col++) {
             int xi = x_off + col;
