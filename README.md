@@ -34,3 +34,22 @@ xeen [options]
   -f <file> : set font
   -F <file> : set font directory
 ```
+
+## Renderer
+Xeen has two renderer implementations with minor differences in practice.
+
+You may select one renderer at compile time.
+To do so, set the envrionment variable `RENDERER` to one of:
+* `stb`
+* `freetype`
+
+### STB
+* default
+* Uses the `stb_truetype` library
+* No runtime dependencies
+* Has trouble calculating the real size of *some* characters under *some* fonts;
+as a result, images could come out misaligned
+
+### FreeType
+* Uses the `FreeType` library
+* libfreetype must be installed on the host machine
