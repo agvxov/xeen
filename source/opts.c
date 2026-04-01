@@ -10,13 +10,13 @@ static
 void usage(void) {
     puts(
         "xeen [options]\n"
-        "\t-h        : print help and exit\n"
-        "\t-v        : print version and exit\n"
-        "\t-o <file> : specify output\n"
-        "\t-t <n>    : set tab width\n"
-        "\t-s <n>    : set font size\n"
-        "\t-f <file> : set font\n"
-        "\t-F <file> : set font directory\n"
+        "\t-h --help           : print help and exit\n"
+        "\t-v --version        : print version and exit\n"
+        "\t-o --ouput <file>   : specify output\n"
+        "\t-t --tab-size  <n>  : set tab width\n"
+        "\t-s --font-size <n>  : set font size\n"
+        "\t-f --font <file>    : set font\n"
+        "\t-F --font-dir <dir> : set font directory\n"
     );
 }
 
@@ -25,7 +25,18 @@ void parse_args(const int argc, const char * const * const argv) {
 
     opterr = 0; // suppress default getopt error messages
 
-    while ((opt = getopt(argc, (char**)argv, "hvo:t:s:f:F:")) != -1) {
+    struct option long_options[] = {
+        {"help",      false, NULL, 'h'},
+        {"version",   false, NULL, 'v'},
+        {"output",    true,  NULL, 'o'},
+        {"tab-size",  true,  NULL, 't'},
+        {"font-size", true,  NULL, 's'},
+        {"font",      true,  NULL, 'f'},
+        {"font-dir",  true,  NULL, 'F'},
+        {0, 0, 0, 0},
+    };
+
+    while ((opt = getopt_long(argc, (char**)argv, "hvo:t:s:f:F:", long_options, NULL)) != -1) {
         switch (opt) {
             case 'h': {
                 usage();
