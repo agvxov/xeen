@@ -18,11 +18,13 @@ Following the UNIX philosophy however,
 Xeen itself does not highlight code for you,
 instead it assumes the input was intelligently annotated with ANSI escapes.
 
-To highlight code, we recommend:
-* [hl](https://github.com/agvxov/syntax)
-* [xighlight](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/~xolatile/xolatilization) (onion)
-* [nvcat](https://github.com/brianhuster/nvcat)
-* [bat](https://github.com/sharkdp/bat)
+To highlight code, we recommend one of the following:
+| Name      | Description          | Link  |
+| :-------- | :------------------- | :---- |
+| hl        | Versatile and simple | [link](https://github.com/agvxov/syntax) |
+| xighlight | Most Serbian         | [link](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/~xolatile/xolatilization) (onion) |
+| nvcat     | Customizable         | [link](https://github.com/brianhuster/nvcat) |
+| bat       | Plug-n-play          | [bat](https://github.com/sharkdp/bat) |
 
 ## CLI
 ```
