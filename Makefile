@@ -2,8 +2,14 @@
 .SUFFIXES:
 
 # --- Config
-RENDERER ?= stb
-#RENDERER ?= freetype
+ifndef RENDERER
+  ifeq ($(shell pkg-config --exists freetype2 && echo yes),yes)
+    RENDERER := freetype
+  else
+    RENDERER := stb
+  endif
+endif
+
 ifeq (${RENDERER}, stb)
   RENDERER_IMPL = renderer-stb.c
   CPPFLAGS += -DRENDERER='"STB static renderer"'
