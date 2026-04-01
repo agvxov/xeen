@@ -9,7 +9,7 @@ The intended use of Xeen is to create screenshot like pictures of code and such,
 without monitor-size or shaky-hand interference.
 
 ```sh
-xighligth source/main.c | xeen
+hl source/main.c | xeen --output example.png
 ```
 Output:
 ![documentation/example.png](documentation/example.png)
