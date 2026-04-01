@@ -29,11 +29,11 @@ To highlight code, we recommend one of the following:
 ## CLI
 ```
 xeen [options]
-  -h        : print help and exit
-  -v        : print version and exit
-  -o <file> : specify output
-  -t <n>    : set tab width
-  -s <n>    : set font size
-  -f <file> : set font
-  -F <file> : set font directory
+	-h --help           : print help and exit
+	-v --version        : print version and exit
+	-o --ouput <file>   : specify output
+	-t --tab-size  <n>  : set tab width
+	-s --font-size <n>  : set font size
+	-f --font <file>    : set font
+	-F --font-dir <dir> : set font directory
 ```
