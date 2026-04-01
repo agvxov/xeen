@@ -30,7 +30,7 @@ ttf_quadruplet_t load_font_paths(const char * root_font_path, const char * targe
     ttf_quadruplet_t r = (ttf_quadruplet_t){0};
 
     char * paths[] = {strdup(root_font_path), NULL};
-    FTS *tree = fts_open(paths, FTS_PHYSICAL | FTS_NOCHDIR, NULL);
+    FTS * tree = fts_open(paths, FTS_PHYSICAL | FTS_NOCHDIR, NULL);
     if (!tree) { goto end; }
 
     FTSENT * entry;

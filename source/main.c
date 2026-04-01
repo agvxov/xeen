@@ -8,7 +8,7 @@
 #include "error.h"
 #include "slurp.h"
 
-char * font_name       = "dejavusansmono";
+char * font_name       = nullptr;
 char * font_directory  = "/usr/share/fonts/";
 char * output_filename = "xeen.png";
 
@@ -33,21 +33,27 @@ signed main(const int argc, const char * const argv[]) {
     render_bg = default_background;
     font_size = font_size_opt;
 
-    ttf_quadruplet_t fonts = load_font_paths(font_directory, font_name);
+    ttf_quadruplet_t fonts = {0};
 
-    if (!is_quadruplet_full(fonts)) {
-        error("Failed to load font '%s' from '%s'.", font_name, font_directory);
-        return 1;
+    if (font_name) {
+        fonts = load_font_paths(font_directory, font_name);
+
+        if (!is_quadruplet_full(fonts)) {
+            error("Failed to load font '%s' from '%s'.", font_name, font_directory);
+            return 1;
+        }
     }
 
-    renderer_init(
+    if (renderer_init(
         w,
         h,
         fonts.normal,
         fonts.bold,
         fonts.italic,
         fonts.bold_italic
-    );
+    )) {
+        return 1;
+    }
 
     xeen(input, input_len);
 

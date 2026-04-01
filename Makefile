@@ -17,8 +17,9 @@ else
 endif
 
 # --- Paths / files
-SOURCE.d := source/
-OBJECT.d := object/
+SOURCE.d  := source/
+OBJECT.d  := object/
+LIBRARY.d := library/
 
 SOURCE += main.c opts.c colorscheme.c ttf_quadruplet.c ${RENDERER_IMPL}
 OBJECT := ${SOURCE}
@@ -37,11 +38,18 @@ vpath %.yy.o ${OBJECT.d}
 OUT := xeen
 
 # --- Tools/Flags
+CFLAGS.D += -Wall -Wextra -Wpedantic
+CFLAGS += -std=c23
+
+CPPFLAGS += -D_GNU_SOURCE
+CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d} -I${LIBRARY.d}
+CPPFLAGS += --embed-dir=resource/dejavu/
+LDLIBS   += -lm
+
 ifeq (${DEBUG}, 1)
   LFLAGS   += --debug --trace
 
   CPPFLAGS += -DDEBUG
-  CFLAGS.D += -Wall -Wextra -Wpedantic
   CFLAGS.D += -O0 -ggdb -fno-inline
   CFLAGS.D += -fsanitize=address,undefined
   CFLAGS   += ${CFLAGS.D}
@@ -49,12 +57,6 @@ ifeq (${DEBUG}, 1)
 else
   CFLAGS += -O3 -g -flto=auto -fno-stack-protector
 endif
-
-CFLAGS += -std=c2x
-
-CPPFLAGS += -D_GNU_SOURCE
-CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d} -Ilibrary
-LDLIBS   += -lm
 
 # --- Rule Section ---
 all: ${OUT}

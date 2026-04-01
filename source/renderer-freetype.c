@@ -1,3 +1,4 @@
+#define RENDERER_IMPLEMENTATION
 #include "renderer.h"
 
 #include <stdio.h>
@@ -49,36 +50,56 @@ colour_t blend_colors(colour_t background, colour_t foreground, colour_t opacity
 }
 
 static
-signed import_ttf_font(const char * name) {
-    if (FT_New_Face(ft, name, 0, &faces[font_style])) {
-        error("Could not load font: '%s'.", name);
+signed load_ttf_font(const char * path, font_type font_style) {
+    int err;
+    if (path) {
+        err = FT_New_Face(ft, path, 0, &faces[font_style]);
+    } else {
+        err = FT_New_Memory_Face(
+            ft,
+            default_fonts[font_style],
+            default_font_sizes[font_style],
+            0,
+            &faces[font_style]
+        );
+    }
+
+    if (err) {
+        if (!path) { path = "(default)"; }
+        error("Could not load font: '%s'.", path);
         return 1;
     }
+
     if (FT_Set_Pixel_Sizes(faces[font_style], 0, font_size)) {
         error("Could not set font size.");
         return 1;
     }
+
     font_width[font_style]  = faces[font_style]->size->metrics.max_advance >> 6;
     font_height[font_style] = faces[font_style]->size->metrics.height >> 6;
 
     return 0;
 }
 
-signed renderer_init(unsigned width, unsigned height, const char * normal, const char * bold, const char * italic, const char * bold_italic) {
-  #define CHECKED_LOAD(x) do {     \
-    font_style = font_ ## x;       \
-    import_ttf_font(x);            \
-  } while (0)
-
+signed renderer_init(
+  unsigned width,
+  unsigned height,
+  const char * normal_path,
+  const char * bold_path,
+  const char * italic_path,
+  const char * bold_italic_path
+) {
+  #define CHECK(x) if (x) { return 1; }
     if (FT_Init_FreeType(&ft)) {
         error("Could not initialize FreeType.\n");
         return 1;
     }
 
-    CHECKED_LOAD(normal);
-    CHECKED_LOAD(bold);
-    CHECKED_LOAD(italic);
-    CHECKED_LOAD(bold_italic);
+    CHECK(load_ttf_font(normal_path, font_normal));
+    CHECK(load_ttf_font(bold_path, font_bold));
+    CHECK(load_ttf_font(italic_path, font_italic));
+    CHECK(load_ttf_font(bold_italic_path, font_bold_italic));
+
     font_style = font_normal;
 
     width  *= font_width[font_style];
@@ -96,7 +117,7 @@ signed renderer_init(unsigned width, unsigned height, const char * normal, const
     render_height = height;
 
     return 0;
-  #undef CHECKED_LOAD
+  #undef CHECK
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
@@ -111,8 +132,8 @@ signed render_character(signed c, unsigned x, unsigned y) {
     int y_off = y - faces[font_style]->glyph->bitmap_top + font_size;
 
     // Background
-    for (int row = 0; row < font_size; row++) {
-        for (int col = 0; col < faces[font_style]->glyph->advance.x >> 6; col++) {
+    for (unsigned row = 0; row < font_size; row++) {
+        for (unsigned col = 0; col < faces[font_style]->glyph->advance.x >> 6; col++) {
             int xi = x + col;
             int yi = y + row;
             if (xi >= 0
@@ -125,8 +146,8 @@ signed render_character(signed c, unsigned x, unsigned y) {
     }
 
     // Character
-    for (int row = 0; row < bmp->rows; row++) {
-        for (int col = 0; col < bmp->width; col++) {
+    for (unsigned row = 0; row < bmp->rows; row++) {
+        for (unsigned col = 0; col < bmp->width; col++) {
             int xi = x_off + col;
             int yi = y_off + row;
             if (xi >= 0

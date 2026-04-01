@@ -1,3 +1,4 @@
+#define RENDERER_IMPLEMENTATION
 #include "renderer.h"
 
 #include <stdio.h>
@@ -48,8 +49,6 @@ static unsigned channel_g (unsigned colour) { return ((colour >>  8) & 0xff); }
 static unsigned channel_b (unsigned colour) { return ((colour >> 16) & 0xff); }
 static unsigned channel_a (unsigned colour) { return ((colour >> 24) & 0xff); }
 
-static signed import_ttf_font(const char * name);
-
 static
 colour_t get_colour(unsigned char alpha) {
     double scale = (double) alpha / 255.0;
@@ -69,16 +68,45 @@ colour_t get_colour(unsigned char alpha) {
     return ((r << 0) | (g << 8) | (b << 16) | (a << 24));
 }
 
-signed renderer_init(unsigned width, unsigned height, const char * normal, const char * bold, const char * italic, const char * bold_italic) {
-  #define CHECKED_LOAD(x) do {     \
-    font_style = font_ ## x;       \
-    import_ttf_font(x);            \
-  } while (0)
+static signed load_ttf_font(const char * font_buffer, font_type font_style);
 
-    CHECKED_LOAD(normal);
-    CHECKED_LOAD(bold);
-    CHECKED_LOAD(italic);
-    CHECKED_LOAD(bold_italic);
+static
+int safe_load_ttf_font(const char * path, font_type font_style) {
+    int r;
+    char * buffer;
+    bool did_alloc = false;
+
+    if (path) {
+        did_alloc = true;
+        buffer = slurp(path);
+    } else {
+        buffer = (char*)default_fonts[font_style];
+    }
+
+    r = load_ttf_font(buffer, font_style);;
+
+    if (did_alloc) {
+        free(buffer);
+    }
+
+    return r;
+}
+
+signed renderer_init(
+  unsigned width,
+  unsigned height,
+  const char * normal_path,
+  const char * bold_path,
+  const char * italic_path,
+  const char * bold_italic_path
+) {
+  #define CHECK(x) if (x) { return 1; }
+
+    CHECK(safe_load_ttf_font(normal_path, font_normal));
+    CHECK(safe_load_ttf_font(bold_path, font_bold));
+    CHECK(safe_load_ttf_font(italic_path, font_italic));
+    CHECK(safe_load_ttf_font(bold_italic_path, font_bold_italic));
+
     font_style = font_normal;
 
     width  *= font_width[font_style];
@@ -96,7 +124,7 @@ signed renderer_init(unsigned width, unsigned height, const char * normal, const
     render_height = height;
 
     return 0;
-  #undef CHECKED_LOAD
+  #undef CHECK
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
@@ -149,16 +177,11 @@ signed render_character(signed c, unsigned x, unsigned y) {
 }
 
 static
-signed import_ttf_font(const char * name) {
-    font_buffer[font_style] = slurp(name);
-
-    if (!font_buffer[font_style]) { return 1; }
-
+signed load_ttf_font(const char * font_buffer, font_type font_style) {
     if (!stbtt_InitFont(&font_info[font_style],
-                        (unsigned char *)font_buffer[font_style],
+                        (unsigned char *)font_buffer,
                         0)) {
         error("Failed to initialize font.");
-        free(font_buffer[font_style]);
         return 1;
     }
 
@@ -249,8 +272,6 @@ signed export_png_image(const char * name) {
         free(glyph_index[font]);
         free(glyph_width[font]);
         free(glyph_data[font]);
-
-        free(font_buffer[font]);
     }
 
     free(glyph_count);
