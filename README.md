@@ -26,7 +26,7 @@ To highlight code, we recommend one of the following:
 | nvcat     | Customizable         | [link](https://github.com/brianhuster/nvcat) |
 | bat       | Plug-n-play          | [bat](https://github.com/sharkdp/bat) |
 
-## CLI
+CLI:
 ```
 xeen [options]
 	-h --help           : print help and exit
@@ -37,3 +37,14 @@ xeen [options]
 	-f --font <file>    : set font
 	-F --font-dir <dir> : set font directory
 ```
+
+## Compilation
+Dependencies:
+* C23
+* Flex
+* FreeType2 (optional)
+
+Xeen supports 2 backends: STB and FreeType2.
+STB will always compile (default), FreeType2 requires the corresponding library instalation.
+The prefered backend can be configured during build time,
+by setting the `RENDERER` environment variable to one of `stb` or `freetype`.
