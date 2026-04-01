@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <string.h>
 #include "error.h"
+#include "slurp.h"
 
 static
 void usage(void) {

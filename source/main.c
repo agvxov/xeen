@@ -6,7 +6,7 @@
 #include "colorscheme.h"
 #include "ttf_quadruplet.h"
 #include "error.h"
-#include "io.inc"
+#include "slurp.h"
 
 char * font_name       = "dejavusansmono";
 char * font_directory  = "/usr/share/fonts/";
@@ -24,8 +24,8 @@ extern int xeen(char * str, size_t n);
 signed main(const int argc, const char * const argv[]) {
     parse_args(argc, argv);
 
-    size_t input_len;
-    char * input = stdin2str(&input_len);
+    char * input = slurp("/dev/stdin");
+    size_t input_len = strlen(input);
 
     int w, h;
     get_dimensions((char*)input, input_len, &h, &w);

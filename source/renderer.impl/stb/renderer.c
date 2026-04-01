@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "error.h"
-#include "io.inc"
+#include "slurp.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -150,7 +150,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
 static
 signed import_ttf_font(const char * name) {
-    font_buffer[font_style] = read_entire_file(name);
+    font_buffer[font_style] = slurp(name);
 
     if (!font_buffer[font_style]) { return 1; }
 

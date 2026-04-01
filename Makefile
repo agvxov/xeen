@@ -52,7 +52,8 @@ endif
 
 CFLAGS += -std=c2x
 
-CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d}
+CPPFLAGS += -D_GNU_SOURCE
+CPPFLAGS += -I${SOURCE.d} -I${OBJECT.d} -Ilibrary
 LDLIBS   += -lm
 
 # --- Rule Section ---
