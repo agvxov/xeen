@@ -80,6 +80,11 @@ ${OUT}: ${GENOBJECT} ${OBJECT}
 	${COMPILE.c} -o ${OBJECT.d}/$@ ${OBJECT.d}/$< -fpermissive -Wno-sign-compare
 
 test:
+	make clean
+	RENDERER=stb make
+	cmdtest --fast
+	make clean
+	RENDERER=freetype make
 	cmdtest --fast
 
 clean:
