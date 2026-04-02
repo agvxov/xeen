@@ -146,22 +146,34 @@ signed render_character(signed c, unsigned x, unsigned y) {
 
         stbtt_GetCodepointHMetrics(&font_info[font_style], c, &advance, &lsb);
 
-        stbtt_GetCodepointBitmapBox(&font_info[font_style], c,
-                                    font_scale[font_style],
-                                    font_scale[font_style], &x0, &y0, &x1, &y1);
+        stbtt_GetCodepointBitmapBox(
+            &font_info[font_style],
+            c,
+            font_scale[font_style],
+            font_scale[font_style],
+            &x0,
+            &y0,
+            &x1,
+            &y1
+        );
 
-        signed off = roundf(lsb * font_scale[font_style]) + font_size
-                   * (font_ascent[font_style] + y0);
+        signed off = roundf(lsb * font_scale[font_style])
+                   + font_size * (font_ascent[font_style] + y0);
 
         off = (off < 0) ? 0 : off; // TODO
 
         glyph_width[font_style][cur] = roundf(advance * font_scale[font_style]);
 
-        stbtt_MakeCodepointBitmap(&font_info[font_style],
-                                  glyph_data[font_style][cur] + off,
-                                  x1 - x0, y1 - y0, font_size,
-                                  font_scale[font_style],
-                                  font_scale[font_style], c);
+        stbtt_MakeCodepointBitmap(
+            &font_info[font_style],
+            glyph_data[font_style][cur] + off,
+            x1 - x0,
+            y1 - y0,
+            font_size,
+            font_scale[font_style],
+            font_scale[font_style],
+            c
+        );
     }
 
     for (unsigned i = 0; i < font_size; ++i) {
@@ -188,10 +200,12 @@ signed load_ttf_font(const char * font_buffer, font_type font_style) {
     font_scale[font_style] = stbtt_ScaleForPixelHeight(&font_info[font_style],
                                                        font_size);
 
-    stbtt_GetFontVMetrics(&font_info[font_style],
-                          &font_ascent[font_style],
-                          &font_descent[font_style],
-                          &font_line_gap[font_style]);
+    stbtt_GetFontVMetrics(
+        &font_info[font_style],
+        &font_ascent[font_style],
+        &font_descent[font_style],
+        &font_line_gap[font_style]
+    );
 
     font_ascent[font_style] = roundf(font_ascent[font_style]
                                      * font_scale[font_style]);
@@ -204,10 +218,16 @@ signed load_ttf_font(const char * font_buffer, font_type font_style) {
 
         stbtt_GetCodepointHMetrics(&font_info[font_style], glyph, &advance, &lsb);
 
-        stbtt_GetCodepointBitmapBox(&font_info[font_style], glyph,
-                                    font_scale[font_style],
-                                    font_scale[font_style],
-                                    &x0, &y0, &x1, &y1);
+        stbtt_GetCodepointBitmapBox(
+            &font_info[font_style],
+            glyph,
+            font_scale[font_style],
+            font_scale[font_style],
+            &x0,
+            &y0,
+            &x1,
+            &y1
+        );
 
         signed width  = x1 - x0;
         signed height = y1 - y0;
