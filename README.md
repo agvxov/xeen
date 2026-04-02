@@ -24,7 +24,7 @@ To highlight code, we recommend one of the following:
 | hl        | Versatile and simple | [link](https://github.com/agvxov/syntax) |
 | xighlight | Most Serbian         | [link](https://bis64wqhh3louusbd45iyj76kmn4rzw5ysawyan5bkxwyzihj67c5lid.onion/~xolatile/xolatilization) (onion) |
 | nvcat     | Customizable         | [link](https://github.com/brianhuster/nvcat) |
-| bat       | Plug-n-play          | [bat](https://github.com/sharkdp/bat) |
+| bat       | Plug-n-play          | [link](https://github.com/sharkdp/bat) |
 
 CLI:
 ```
