@@ -45,7 +45,14 @@ Dependencies:
 * FreeType2 (optional)
 
 Xeen supports 2 backends: STB and FreeType2.
-STB will always compile (fallback),
-FreeType2 requires the corresponding library installation (used if available).
 The preferred backend can be configured during build time,
 by setting the `RENDERER` environment variable to one of `stb` or `freetype`.
+
+STB:
+* fallback
+* will always compile, statically ships with the repo
+* slightly ugly anti-aliasing, most noticeable for high contrast back- and foregrounds
+
+FreeType2:
+* requires the TrueType2 library, default backend when available
+* better AA than STB
