@@ -49,6 +49,28 @@ colour_t blend_colors(colour_t background, colour_t foreground, colour_t opacity
     return (0xFF << 24) | (out_r << 16) | (out_g << 8) | out_b;
 }
 
+static inline
+int ft_px_ceil(FT_Pos v) {
+    return (int)((v + 63) >> 6);
+}
+
+int terminal_cell_width(FT_Face face) {
+    return ft_px_ceil(face->size->metrics.max_advance);
+}
+
+int terminal_line_height(FT_Face face) {
+    FT_Size_Metrics *m = &face->size->metrics;
+
+    int ascent  = ft_px_ceil( m->ascender);
+    int descent = ft_px_ceil(-m->descender);
+    int gap     = ft_px_ceil(m->height - m->ascender + m->descender);
+
+    if (gap < 0)
+        gap = 0;
+
+    return ascent + descent + gap;
+}
+
 static
 signed load_ttf_font(const char * path, font_type font_style) {
     int err;
@@ -116,6 +138,9 @@ signed renderer_init(
     render_width  = width;
     render_height = height;
 
+    font_indent = terminal_cell_width(faces[0]);
+    font_size   = terminal_line_height(faces[0]);
+
     return 0;
   #undef CHECK
 }
@@ -131,23 +156,11 @@ signed render_character(signed c, unsigned x, unsigned y) {
     FT_GlyphSlot glyph = face->glyph;
     FT_Size_Metrics *m = &face->size->metrics;
 
-    /* Font metrics are in 26.6 fixed-point pixels. */
-    const int ascender    = (int)(m->ascender >> 6);
-    const int descender   = (int)(m->descender >> 6);   /* usually negative */
-    const int line_height = (int)(m->height >> 6);       /* ascender - descender + line_gap */
+    const int cell_width  = font_indent;
+    const int line_height = font_size;
 
-    /*
-        Terminal cell width must stay fixed.
-        For a real monospace face, max_advance is constant for all glyphs.
-        Do not use kerning.
-    */
-    const int cell_width = (int)(m->max_advance >> 6);
-
-    /*
-        y is the top of the line box.
-        The baseline sits ascender pixels below that.
-    */
-    const int baseline_y = y + ascender;
+    const int ascent = ft_px_ceil(m->ascender);
+    const int baseline_y = y + ascent;
 
     const int x_off = x + glyph->bitmap_left;
     const int y_off = baseline_y - glyph->bitmap_top;
@@ -157,6 +170,7 @@ signed render_character(signed c, unsigned x, unsigned y) {
         for (int col = 0; col < cell_width; col++) {
             int xi = x + col;
             int yi = y + row;
+
             if (xi >= 0 && xi < render_width &&
                 yi >= 0 && yi < render_height) {
                 render_data[yi * render_width + xi] = render_bg;
