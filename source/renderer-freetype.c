@@ -121,46 +121,64 @@ signed renderer_init(
 }
 
 signed render_character(signed c, unsigned x, unsigned y) {
-    if (FT_Load_Char(faces[font_style], c, FT_LOAD_RENDER)) {
+    FT_Face face = faces[font_style];
+
+    if (FT_Load_Char(face, (FT_ULong)c, FT_LOAD_RENDER)) {
         error("Could not load character '%c'.", c);
         return 1;
     }
 
-    FT_Bitmap * bmp = &faces[font_style]->glyph->bitmap;
+    FT_GlyphSlot glyph = face->glyph;
+    FT_Size_Metrics *m = &face->size->metrics;
 
-    int x_off = x + faces[font_style]->glyph->bitmap_left;
-    int y_off = y - faces[font_style]->glyph->bitmap_top + font_size;
+    /* Font metrics are in 26.6 fixed-point pixels. */
+    const int ascender    = (int)(m->ascender >> 6);
+    const int descender   = (int)(m->descender >> 6);   /* usually negative */
+    const int line_height = (int)(m->height >> 6);       /* ascender - descender + line_gap */
+
+    /*
+        Terminal cell width must stay fixed.
+        For a real monospace face, max_advance is constant for all glyphs.
+        Do not use kerning.
+    */
+    const int cell_width = (int)(m->max_advance >> 6);
+
+    /*
+        y is the top of the line box.
+        The baseline sits ascender pixels below that.
+    */
+    const int baseline_y = y + ascender;
+
+    const int x_off = x + glyph->bitmap_left;
+    const int y_off = baseline_y - glyph->bitmap_top;
 
     // Background
-    for (unsigned row = 0; row < font_size; row++) {
-        for (unsigned col = 0; col < faces[font_style]->glyph->advance.x >> 6; col++) {
+    for (int row = 0; row < line_height; row++) {
+        for (int col = 0; col < cell_width; col++) {
             int xi = x + col;
             int yi = y + row;
-            if (xi >= 0
-            &&  xi < render_width
-            &&  yi >= 0
-            &&  yi < render_height) {
+            if (xi >= 0 && xi < render_width &&
+                yi >= 0 && yi < render_height) {
                 render_data[yi * render_width + xi] = render_bg;
             }
         }
     }
 
     // Character
-    for (unsigned row = 0; row < bmp->rows; row++) {
-        for (unsigned col = 0; col < bmp->width; col++) {
-            int xi = x_off + col;
-            int yi = y_off + row;
-            if (xi >= 0
-            &&  xi < render_width
-            &&  yi >= 0
-            &&  yi < render_height) {
-                unsigned char gray = bmp->buffer[row * bmp->pitch + col];
+    for (unsigned row = 0; row < glyph->bitmap.rows; row++) {
+        for (unsigned col = 0; col < glyph->bitmap.width; col++) {
+            int xi = x_off + (int)col;
+            int yi = y_off + (int)row;
+
+            if (xi >= 0 && xi < render_width &&
+                yi >= 0 && yi < render_height) {
+                unsigned char gray = glyph->bitmap.buffer[row * glyph->bitmap.pitch + col];
                 render_data[yi * render_width + xi] = blend_colors(render_bg, render_fg, gray);
             }
         }
     }
 
-    return faces[font_style]->glyph->advance.x >> 6;
+    return cell_width;
 }
 
 signed export_png_image(const char * name) {

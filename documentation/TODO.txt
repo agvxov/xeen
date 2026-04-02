@@ -1,1 +1,1 @@
-+ the background rectangles are off compared to real terminals; they start too high and end too low
+* nothing known
