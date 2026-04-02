@@ -25,6 +25,8 @@ extern colour_t render_fg;
 extern colour_t render_bg;
 extern colour_t render_no;
 
+#define PNG_COMPRESSION_LEVEL 4
+
 /* Reads the default font on NULL argument.
  */
 extern signed renderer_init(unsigned width, unsigned height, const char * normal_path, const char * bold_path, const char * italic_path, const char * bold_italic_path);

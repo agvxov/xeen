@@ -259,7 +259,7 @@ signed export_png_image(const char * name) {
         name,
         image_limit,
         render_height,
-        4,
+        PNG_COMPRESSION_LEVEL,
         buffer,
         image_limit * 4
     );

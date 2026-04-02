@@ -164,7 +164,6 @@ signed render_character(signed c, unsigned x, unsigned y) {
 }
 
 signed export_png_image(const char * name) {
-  #define COMPRESSION_LEVEL 4
     int r = 0;
 
     unsigned * buffer = malloc(image_limit * render_height * sizeof(*buffer));
@@ -179,7 +178,7 @@ signed export_png_image(const char * name) {
         name,
         image_limit,
         render_height,
-        COMPRESSION_LEVEL,
+        PNG_COMPRESSION_LEVEL,
         buffer,
         image_limit * 4
     );
@@ -187,5 +186,4 @@ signed export_png_image(const char * name) {
     free(buffer);
 
     return r;
-  #undef COMPRESSION_LEVEL
 }
