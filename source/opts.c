@@ -8,8 +8,8 @@
 
 static
 void usage(void) {
-    puts(
-        "xeen [options]\n"
+    fputs(
+        "xeen [options] < DATA\n"
         "\t-h --help           : print help and exit\n"
         "\t-v --version        : print version and exit\n"
         "\t-o --ouput <file>   : specify output\n"
@@ -17,6 +17,7 @@ void usage(void) {
         "\t-s --font-size <n>  : set font size\n"
         "\t-f --font <file>    : set font\n"
         "\t-F --font-dir <dir> : set font directory\n"
+        , stdout
     );
 }
 
