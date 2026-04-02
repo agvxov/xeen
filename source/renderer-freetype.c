@@ -124,8 +124,11 @@ signed renderer_init(
 
     font_style = font_normal;
 
-    width  *= font_width[font_style];
-    height *= font_height[font_style];
+    font_indent = terminal_cell_width(faces[0]);
+    font_size   = terminal_line_height(faces[0]);
+
+    width  *= font_indent;
+    height *= font_size;
 
     render_data = calloc(width * height, sizeof(*render_data));
 
@@ -137,9 +140,6 @@ signed renderer_init(
 
     render_width  = width;
     render_height = height;
-
-    font_indent = terminal_cell_width(faces[0]);
-    font_size   = terminal_line_height(faces[0]);
 
     return 0;
   #undef CHECK
