@@ -85,11 +85,36 @@ utfchar         {utf2byte}|{utf3byte}|{utf4byte}
                             default:        font_style = font_italic;      break;
                         }
                     }
-7                   { // reversed
+7|27                { // reversed / no-reverse
                         colour_t swap;
                         swap = render_fg;
                         render_fg = render_bg;
                         render_bg = swap;
+                    }
+21                  { // no bold
+                        if (font_style == font_bold) {
+                            font_style = font_normal;
+                        } else
+                        if (font_types == font_bold_italic) {
+                            font_style = font_italic;
+                        }
+                    }
+22                  { // no bold/faint
+                        if (font_style == font_bold) {
+                            font_style = font_normal;
+                        } else
+                        if (font_types == font_bold_italic) {
+                            font_style = font_italic;
+                        }
+                        // XXX remove faint
+                    }
+23                  { // no italic
+                        if (font_style == font_italic) {
+                            font_style = font_normal;
+                        } else
+                        if (font_types == font_bold_italic) {
+                            font_style = font_bold;
+                        }
                     }
                     /* --- 4 BIT COLORS --- */
 3[0-7]              { // foreground
